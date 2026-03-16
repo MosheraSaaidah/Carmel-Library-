@@ -25,18 +25,18 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    const userActivityCanvas = document.getElementById('userActivityChart');
-    if (userActivityCanvas) {
+    const memberActivityCanvas = document.getElementById('memberActivityChart');
+    if (memberActivityCanvas) {
         let labels = [];
         let values = [];
         try {
-            labels = JSON.parse(userActivityCanvas.dataset.labels || '[]');
-            values = JSON.parse(userActivityCanvas.dataset.values || '[]');
+            labels = JSON.parse(memberActivityCanvas.dataset.labels || '[]');
+            values = JSON.parse(memberActivityCanvas.dataset.values || '[]');
         } catch (e) {
-            console.warn('Users activity chart: invalid data', e);
+            console.warn('Members activity chart: invalid data', e);
         }
 
-        new Chart(userActivityCanvas.getContext('2d'), {
+        new Chart(memberActivityCanvas.getContext('2d'), {
             type: 'bar',
             data: {
                 labels: labels,

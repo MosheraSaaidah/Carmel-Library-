@@ -18,8 +18,11 @@ class ReportController {
         params.toDate = parseDateParam(params.toDate)
 
         Map model = reportService.buildReportModel(reportType, params)
-        model.allMembers = Member.findAllByActive(true, [sort: 'fullName'])
+        // For history reports we want to be able to see archived items too,
+        // so we provide full lists (active + archived) for the dropdowns.
+        model.allMembers = Member.list(sort: 'fullName')
         model.allCategories = Category.list(sort: 'categoryName')
+        model.allBooks = Book.list(sort: 'bookTitle')
         model
     }
 

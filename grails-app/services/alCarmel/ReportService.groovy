@@ -30,11 +30,13 @@ class ReportService {
     Map<String, Object> buildReportModel(String reportType, def params) {
         def borrowingReport = [:]
         def booksStatistics = [:]
+        def bookHistory = [:]
         def popularBooks = []
-        def userActivity = []
+        def memberActivity = []
+        def memberHistory = [:]
         def monthlyBorrowing = []
         def yearlyBorrowing = []
-
+        // History and statistics switch
         switch (reportType) {
             case "BORROWING":
                 borrowingReport = getBorrowingReport(params)
@@ -43,7 +45,20 @@ class ReportService {
                 booksStatistics = getBooksStatistics()
                 break
             case "USERS":
-                userActivity = getUserActivity(params)
+                // Members activity (used by Users/Members Activity report)
+                memberActivity = getMemberActivity(params)
+                break
+            case "BOOK_HISTORY":
+                Long bookId = params.long('bookId')
+                if (bookId) {
+                    bookHistory = getBookHistory(bookId)
+                }
+                break
+            case "MEMBER_HISTORY":
+                Long memberId = params.long('memberId')
+                if (memberId) {
+                    memberHistory = getMemberHistory(memberId)
+                }
                 break
             case "POPULAR_BOOKS":
                 popularBooks = getPopularBooks(params)
@@ -62,13 +77,15 @@ class ReportService {
         }
 
         [
-                reportType      : reportType,
-                borrowingReport : borrowingReport,
-                booksStatistics : booksStatistics,
-                popularBooks    : popularBooks,
-                userActivity    : userActivity,
-                monthlyBorrowing: monthlyBorrowing,
-                yearlyBorrowing : yearlyBorrowing
+                reportType       : reportType,
+                borrowingReport  : borrowingReport,
+                booksStatistics  : booksStatistics,
+                bookHistory      : bookHistory,
+                popularBooks     : popularBooks,
+                memberActivity   : memberActivity,
+                memberHistory    : memberHistory,
+                monthlyBorrowing : monthlyBorrowing,
+                yearlyBorrowing  : yearlyBorrowing
         ]
     }
 
@@ -326,6 +343,19 @@ class ReportService {
         ]
     }
 
+    Map<String ,Object> getBookHistory(Long bookId){
+        def book = Book.get(bookId)
+        if(!book) return [book:null ,borrows: []]
+        def borrows = Borrow.findAllByBook(book , [sort: 'borrowDate',order: 'desc'])
+        [
+            book : book ,
+            borrows: borrows,
+            totalBorrowings: borrows.size(),
+            lateBorrows : borrows.count {it.status == "LATE"} ,
+
+        ]
+
+    }
     List<Map<String, Object>> getPopularBooks(Map params) {
         def range = resolveDateRange(params)
         Date from = range.from
@@ -358,7 +388,7 @@ class ReportService {
         ).collect { [book: it[0] as Book, count: it[1] as Long] }
     }
 
-    List<Map<String, Object>> getUserActivity(Map params) {
+    List<Map<String, Object>> getMemberActivity(Map params) {
         def range = resolveDateRange(params)
         Date from = range.from
         Date to = range.to
@@ -388,6 +418,27 @@ class ReportService {
                 queryParams,
                 [max: 20]
         ).collect { [member: it[0] as Member, count: it[1] as Long] }
+    }
+
+    Map<String ,Object> getMemberHistory(Long memberId){
+        def member = Member.get(memberId)
+        if(!member)return  [member:null ,borrows:[]]
+        def borrows = Borrow.findAllByMember(member, [sort: 'borrowDate', order: 'desc'])
+        [
+                member :member ,
+                borrows: borrows ,
+                totalBorrowings: borrows.size(),
+                lateBorrows : borrows.count {it.status == "LATE"} ,
+                totalFees : borrows.sum{
+                            b-> if(b.dueDate && b.status in ["BORROWED" ,"RETURNED"])
+                            {
+                                def endDay = b.returnDate ?: new Date()
+                                def days = (int)((endDay.time - b.dueDate.time) /  (24 * 60 * 60 * 1000))
+                                return  days > 0 ? days : 0
+                    }
+                        return 0
+                } ?: 0,
+        ]
     }
 
     List<Map<String, Object>> getMonthlyBorrowingReport(Integer year, Map params = [:]) {

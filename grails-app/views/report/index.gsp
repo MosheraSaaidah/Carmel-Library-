@@ -1,14 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<meta name="layout" content="main"/>
+<meta name="layout" content="main" xmlns:g="http://www.w3.org/1999/xhtml"/>
 <g:set var="selectedType" value="${reportType ?: 'BORROWING'}"/>
-
+<!--Header-->
 <div class="page-header">
     <div>
         <h1 class="page-title">Reports</h1>
         <p class="page-subtitle">Analyze library data over time with dynamic filters and charts.</p>
     </div>
 </div>
-
+<!--reports-filters-->
 <div class="row g-3 reports-filters">
     <div class="col-12">
         <div class="card">
@@ -18,12 +18,14 @@
                         <label class="form-label">Report Type</label>
                         <g:select name="reportType"
                                   from="${[
-                                          'BORROWING'     : 'Borrowing Report',
-                                          'BOOKS'         : 'Books Statistics',
-                                          'USERS'         : 'Users Activity',
-                                          'POPULAR_BOOKS' : 'Popular Books',
-                                          'MONTHLY'       : 'Monthly Borrowing',
-                                          'YEARLY'        : 'Yearly Statistics'
+                                          'BORROWING'       : 'Borrowing Report',
+                                          'BOOKS'           : 'Books Statistics',
+                                          'USERS'           : 'Members Activity',
+                                          'BOOK_HISTORY'    : 'Book History',
+                                          'MEMBER_HISTORY'  : 'Member History',
+                                          'POPULAR_BOOKS'   : 'Popular Books',
+                                          'MONTHLY'         : 'Monthly Borrowing',
+                                          'YEARLY'          : 'Yearly Statistics'
                                   ]}"
                                   optionKey="key"
                                   optionValue="value"
@@ -47,7 +49,7 @@
                     <div class="col-md-2">
                         <label class="form-label">Year</label>
                         <input type="number" name="year" class="form-control"
-                               min="2000" max="2100" value="${params.year ?: ''}"/>
+                               min="2000" max="2026" value="${params.year ?: ''}"/>
                     </div>
                     <div class="col-md-2">
                         <label class="form-label">Month</label>
@@ -70,13 +72,24 @@
                     </div>
 
                     <div class="col-md-3">
-                        <label class="form-label">User</label>
+                        <label class="form-label">Member</label>
                         <g:select name="memberId"
                                   from="${allMembers}"
                                   optionKey="id"
                                   optionValue="fullName"
                                   value="${params.long('memberId')}"
-                                  noSelection="['':'All users']"
+                                  noSelection="['':'All members']"
+                                  class="form-select"/>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Book (for Book History)</label>
+                        <g:select name="bookId"
+                                  from="${allBooks}"
+                                  optionKey="id"
+                                  optionValue="bookTitle"
+                                  value="${params.long('bookId')}"
+                                  noSelection="['':'All books']"
                                   class="form-select"/>
                     </div>
 
@@ -110,6 +123,8 @@
 </div>
 
 <div class="row g-3 mt-1">
+
+<!-- selectedType == 'BORROWING'   -->
     <g:if test="${selectedType == 'BORROWING'}">
         <div class="col-12">
             <div class="card">
@@ -163,8 +178,10 @@
                                 </table>
                             </div>
                         </div>
+
+                        <!--   Most Active Member -->
                         <div class="col-md-6">
-                            <h6>Most Active Users</h6>
+                            <h6>Most Active Member</h6>
                             <div class="table-responsive">
                                 <table class="table table-sm align-middle">
                                     <thead>
@@ -197,6 +214,7 @@
         </div>
     </g:if>
 
+<!-- selectedType == 'BOOKS'   -->
     <g:if test="${selectedType == 'BOOKS'}">
         <div class="col-12">
             <div class="card">
@@ -243,11 +261,12 @@
         </div>
     </g:if>
 
+<!--   selectedType == 'USERS' -->
     <g:if test="${selectedType == 'USERS'}">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">Users Activity</h5>
+                    <h5 class="mb-0">Members Activity</h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -262,14 +281,14 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <g:each in="${userActivity ?: []}" var="row" status="i">
+                                    <g:each in="${memberActivity ?: []}" var="row" status="i">
                                         <tr>
                                             <td>${i + 1}</td>
                                             <td>${row.member?.fullName}</td>
                                             <td>${row.count}</td>
                                         </tr>
                                     </g:each>
-                                    <g:if test="${!(userActivity ?: [])}">
+                                    <g:if test="${!(memberActivity ?: [])}">
                                         <tr>
                                             <td colspan="3" class="text-muted text-center">No activity for this period.</td>
                                         </tr>
@@ -279,9 +298,9 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <canvas id="userActivityChart"
-                                    data-labels="${(userActivity ?: []).collect{ it.member?.fullName } as grails.converters.JSON}"
-                                    data-values="${(userActivity ?: []).collect{ it.count } as grails.converters.JSON}"></canvas>
+                                    <canvas id="memberActivityChart"
+                                            data-labels="${(memberActivity ?: []).collect{ it.member?.fullName } as grails.converters.JSON}"
+                                            data-values="${(memberActivity ?: []).collect{ it.count } as grails.converters.JSON}"></canvas>
                         </div>
                     </div>
                 </div>
@@ -289,6 +308,7 @@
         </div>
     </g:if>
 
+<!--selectedType == 'POPULAR_BOOKS-->
     <g:if test="${selectedType == 'POPULAR_BOOKS'}">
         <div class="col-12">
             <div class="card">
@@ -335,6 +355,116 @@
         </div>
     </g:if>
 
+<!--selectedType == 'BOOK_HISTORY-->
+    <g:if test="${selectedType == 'BOOK_HISTORY'}">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Book Borrow History</h5>
+                </div>
+                <div class="card-body">
+                    <g:if test="${bookHistory?.book}">
+                        <h6>Book: ${bookHistory.book.bookTitle}</h6>
+                        <p class="text-muted">
+                            Total Borrowings: ${bookHistory.totalBorrowings ?: 0} |
+                            Late Borrows: ${bookHistory.lateBorrows ?: 0}
+                        </p>
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Member</th>
+                                    <th>Borrow Date</th>
+                                    <th>Due Date</th>
+                                    <th>Return Date</th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <g:each in="${bookHistory.borrows ?: []}" var="b" status="i">
+                                    <tr>
+                                        <td>${i + 1}</td>
+                                        <td>${b.member?.fullName}</td>
+                                        <td><g:formatDate date="${b.borrowDate}" format="yyyy-MM-dd"/></td>
+                                        <td><g:formatDate date="${b.dueDate}" format="yyyy-MM-dd"/></td>
+                                        <td><g:if test="${b.returnDate}"><g:formatDate date="${b.returnDate}" format="yyyy-MM-dd"/></g:if></td>
+                                        <td>${b.status}</td>
+                                    </tr>
+                                </g:each>
+                                <g:if test="${!(bookHistory.borrows ?: [])}">
+                                    <tr>
+                                        <td colspan="6" class="text-muted text-center">No borrow history for this book.</td>
+                                    </tr>
+                                </g:if>
+                                </tbody>
+                            </table>
+                        </div>
+                    </g:if>
+                    <g:else>
+                        <p class="text-muted">Please choose a book from the filters above and click Apply Filters.</p>
+                    </g:else>
+                </div>
+            </div>
+        </div>
+    </g:if>
+
+<!--selectedType == 'MEMBER_HISTORY'-->
+    <g:if test="${selectedType == 'MEMBER_HISTORY'}">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Member Borrow History</h5>
+                </div>
+                <div class="card-body">
+                    <g:if test="${memberHistory?.member}">
+                        <h6>Member: ${memberHistory.member.fullName}</h6>
+                        <p class="text-muted">
+                            Total Borrowings: ${memberHistory.totalBorrowings ?: 0} |
+                            Late Borrows: ${memberHistory.lateBorrows ?: 0} |
+                            Total Late Days: ${memberHistory.totalFees ?: 0}
+                        </p>
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Book</th>
+                                    <th>Borrow Date</th>
+                                    <th>Due Date</th>
+                                    <th>Return Date</th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <g:each in="${memberHistory.borrows ?: []}" var="b" status="i">
+                                    <tr>
+                                        <td>${i + 1}</td>
+                                        <td>${b.book?.bookTitle}</td>
+                                        <td><g:formatDate date="${b.borrowDate}" format="yyyy-MM-dd"/></td>
+                                        <td><g:formatDate date="${b.dueDate}" format="yyyy-MM-dd"/></td>
+                                        <td><g:if test="${b.returnDate}"><g:formatDate date="${b.returnDate}" format="yyyy-MM-dd"/></g:if></td>
+                                        <td>${b.status}</td>
+                                    </tr>
+                                </g:each>
+                                <g:if test="${!(memberHistory.borrows ?: [])}">
+                                    <tr>
+                                        <td colspan="6" class="text-muted text-center">No borrow history for this member.</td>
+                                    </tr>
+                                </g:if>
+                                </tbody>
+                            </table>
+                        </div>
+                    </g:if>
+                    <g:else>
+                        <p class="text-muted">Please choose a member from the filters above and click Apply Filters.</p>
+                    </g:else>
+                </div>
+            </div>
+        </div>
+    </g:if>
+
+<!--    selectedType in ['MONTHLY', 'YEARLY ']-->
     <g:if test="${selectedType in ['MONTHLY', 'YEARLY']}">
         <div class="col-12">
             <div class="card">
