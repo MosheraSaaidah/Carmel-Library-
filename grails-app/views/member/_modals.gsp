@@ -110,9 +110,12 @@
                         <label>EMAIL</label>
                         <input type="email" name="email" id="editEmail"
                                class="input-custom"
-                               required
-                               inputmode="email"
-                        />
+                               readonly="readonly"
+                               tabindex="-1"
+                               inputmode="email"/>
+                        <div class="text-muted small">
+                            Email cannot be changed by admin.
+                        </div>
                     </div>
 
                     <div class="form-group-custom">

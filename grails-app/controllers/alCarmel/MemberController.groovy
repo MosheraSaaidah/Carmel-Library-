@@ -3,18 +3,31 @@ package alCarmel
 class MemberController {
 
     MemberService memberService
+    SecurityService securityService
 
     // Members listing page (active only)
     def index() {
+        if (!securityService.hasRole(session, "ADMIN")) {
+            redirect(controller: 'auth', action: 'login')
+            return
+        }
         [members: memberService.getMembers()]
     }
 
     // Archived members list (admin view)
     def archived() {
+        if (!securityService.hasRole(session, "ADMIN")) {
+            redirect(controller: 'auth', action: 'login')
+            return
+        }
         [members: memberService.getArchivedMembers()]
     }
 
     def save() {
+        if (!securityService.hasRole(session, "ADMIN")) {
+            redirect(controller: 'auth', action: 'login')
+            return
+        }
         def member = memberService.saveMember(params)
 
         if (member.hasErrors()) {
@@ -37,6 +50,10 @@ class MemberController {
     }
 
     def update() {
+        if (!securityService.hasRole(session, "ADMIN")) {
+            redirect(controller: 'auth', action: 'login')
+            return
+        }
         try {
             def member = memberService.updateMember(params.id as Long, params)
 
@@ -65,6 +82,10 @@ class MemberController {
 
     // Soft delete: archive member instead of permanent delete
     def archive() {
+        if (!securityService.hasRole(session, "ADMIN")) {
+            redirect(controller: 'auth', action: 'login')
+            return
+        }
         try {
             memberService.archiveMember(params.long('id'))
             flash.success = 'Member archived successfully. They no longer appear in the active list but remain in the database for history.'
@@ -76,6 +97,10 @@ class MemberController {
     }
 
     def restore() {
+        if (!securityService.hasRole(session, "ADMIN")) {
+            redirect(controller: 'auth', action: 'login')
+            return
+        }
         try {
             memberService.restoreMember(params.long('id'))
             flash.success = 'Member restored successfully. They are active again.'

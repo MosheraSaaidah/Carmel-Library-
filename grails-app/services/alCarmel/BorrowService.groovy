@@ -7,6 +7,13 @@ import java.time.ZoneId
 @Transactional
 class BorrowService {
 
+    NotificationService notificationService
+    def grailsApplication
+
+    /** عدد أيام الاستعارة حتى موعد الإرجاع (من application.yml: carmel.borrow.daysUntilDue، افتراضي 14) */
+    int getDaysUntilDue() {
+        grailsApplication?.config?.getProperty('carmel.borrow.daysUntilDue', Integer, 14) ?: 14
+    }
     // Returns all borrows or a subset filtered by status for the
     // Borrowing System tabs on the UI.
     def getBorrows(String filter) {
@@ -41,10 +48,11 @@ class BorrowService {
             throw new Exception("You cannot borrow the same book twice before returning it.")
         }
 
-        // تاريخ الاستعارة والموعد النهائي (14 يوم)
-        def now = new Date() /// هون رح العب عشان عملية التيستينج
+        // تاريخ الاستعارة والموعد النهائي (من الإعداد carmel.borrow.daysUntilDue)
+        int days = getDaysUntilDue()
+        def now = new Date()
         def due = Date.from(
-                LocalDate.now().plusDays(14)
+                LocalDate.now().plusDays(days)
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()
         )
 
@@ -72,17 +80,40 @@ class BorrowService {
         borrow
     }
 
+    /**
+     * Marks a borrow as returned.
+     * Returns the number of late days (0 if on time) so the caller can calculate/display fees.
+     */
     def returnBookService(Long borrowId) {
         def borrow = Borrow.get(borrowId)
         if (!borrow) throw new Exception("Borrow record not found")
 
         borrow.returnDate = new Date()
-        borrow.status     = "RETURNED"
+        int lateDays = 0
+        if (borrow.dueDate) {
+            // difference in whole days between return date and due date
+            lateDays = (int) ((borrow.returnDate.time - borrow.dueDate.time) / (24 * 60 * 60 * 1000))
+            if (lateDays < 0) {
+                lateDays = 0
+            }
+        }
+
+        // If the book is returned after its due date, mark as LATE, otherwise RETURNED
+        borrow.status = lateDays > 0 ? "LATE" : "RETURNED"
         borrow.save()
 
         borrow.book.availableCopies++
         borrow.book.save()
+
+        // Notify reservations if this book has become available again
+        if (notificationService) {
+            notificationService.notifyReservationsForBook(borrow.book)
+        }
+
+        // Late fee is $1 per late day; caller can use this value.
+        return lateDays
     }
+
 
     def updateLateBorrows() {
         def today = Date.from(

@@ -247,6 +247,12 @@
                                 <div class="stat-value">${booksStatistics.activeTitles ?: 0}</div>
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-label">Reserved Titles</div>
+                                <div class="stat-value">${booksStatistics.reservedTitles ?: 0}</div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="row mt-4">

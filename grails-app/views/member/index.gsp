@@ -10,9 +10,6 @@
         <g:link controller="member" action="archived" class="btn btn-outline-secondary">
             <i class="bi bi-archive"></i> Archived Members
         </g:link>
-        <button class="btn-green" data-bs-toggle="modal" data-bs-target="#addMemberModal">
-            <i class="bi bi-plus-lg"></i> Register Member
-        </button>
     </div>
 </div>
 

@@ -1,4 +1,11 @@
 ---
+# قواعد المكتبة — مدة الاستعارة وموعد إرسال التذكيرات
+carmel:
+    borrow:
+        daysUntilDue: 14          # مدة الاستعارة بالأيام (موعد الإرجاع = تاريخ الاستعارة + هذا العدد)
+    notification:
+        reminderDaysBeforeDue: 1  # قبل كم يوم من موعد الإرجاع نرسل تذكير (1 = يوم واحد قبل، 2 = يومين قبل، ...)
+
 grails:
     profile: web
     codegen:
@@ -98,6 +105,20 @@ grails:
                 staticparts: none
 
 ---
+# إعداد البريد يعمل في development و production — غيّر الإيميل وكلمة مرور التطبيق
+spring:
+    mail:
+        host: smtp.gmail.com
+        port: 587
+        username: "mushera667@gmail.com"
+        password: "oklgiskurfwkivce"
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+
 hibernate:
     dialect: org.hibernate.dialect.H2Dialect
     cache:

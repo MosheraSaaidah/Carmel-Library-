@@ -20,6 +20,7 @@ class Member {
     String phoneNumber
     String address
     Date membershipDate = new Date()
+    User user
 
     /** Soft delete: false = archived, not shown in normal lists */
     Boolean active = true
@@ -44,6 +45,7 @@ class Member {
         address     nullable: false, inList: CITY_OPTIONS
         archivedAt  nullable: true
         archivedBy  nullable: true
+        user nullable: true , unique:true
     }
 
     static mapping = {

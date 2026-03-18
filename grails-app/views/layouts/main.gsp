@@ -43,57 +43,108 @@
       <g:layoutHead/>
 </head>
 
-<body data-success="${flash.success}" data-error="${flash.error}">
+<body class="${controllerName == 'auth' ? 'auth-page' : ''}"
+      data-success="${flash.success}" data-error="${flash.error}">
+
+<g:set bean="securityService" var="securityService"/>
 
 <div class="app-wrapper">
 
     %{--   Sidebar   --}%
-    <aside class="sidebar">
-    %{--Logo--}%
-        <div class="sidebar-logo">
-            <div class="logo-icon">
-                <i class="bi bi-bar-chart-fill"></i>
+    <g:if test="${securityService?.isLoggedIn(session)}">
+        <aside class="sidebar">
+            %{--Logo--}%
+            <div class="sidebar-logo">
+                <div class="logo-icon">
+                    <i class="bi bi-bar-chart-fill"></i>
+                </div>
+                <div class="logo-text-wrap">
+                    <div class="logo-text-ar">مكتبة الكرمل</div>
+                    <div class="logo-text-en">CARMEL LIBRARY</div>
+                </div>
             </div>
-            <div class="logo-text-wrap">
-                <div class="logo-text-ar">مكتبة الكرمل</div>
-                <div class="logo-text-en">CARMEL LIBRARY</div>
+
+            %{-- Nav --}%
+            <div class="sidebar-nav">
+
+                %{-- روابط ADMIN --}%
+                <g:if test="${session.role == 'ADMIN'}">
+                    <g:link controller="dashboard" action="index"
+                            class="nav-item ${controllerName == 'dashboard' ? 'active' : ''}">
+                        <i class="bi bi-grid-1x2"></i>
+                        <span>Dashboard</span>
+                    </g:link>
+
+                    <g:link controller="book" action="index"
+                            class="nav-item ${controllerName == 'book' ? 'active' : ''}">
+                        <i class="bi bi-book"></i>
+                        <span>Books Inventory</span>
+                    </g:link>
+
+                    <g:link controller="category" action="index"
+                            class="nav-item ${controllerName == 'category' ? 'active' : ''}">
+                        <i class="bi bi-tag"></i>
+                        <span>Categories</span>
+                    </g:link>
+
+                    <g:link controller="borrow" action="index"
+                            class="nav-item ${controllerName == 'borrow' ? 'active' : ''}">
+                        <i class="bi bi-clock-history"></i>
+                        <span>Borrowing System</span>
+                    </g:link>
+
+                    <g:link controller="member" action="index"
+                            class="nav-item ${controllerName == 'member' ? 'active' : ''}">
+                        <i class="bi bi-people"></i>
+                        <span>Members</span>
+                    </g:link>
+
+                    <g:link controller="report" action="index"
+                            class="nav-item ${controllerName == 'report' ? 'active' : ''}">
+                        <i class="bi bi-bar-chart-line"></i>
+                        <span>Reports</span>
+                    </g:link>
+
+                    <g:link controller="reservationAdmin" action="index"
+                            class="nav-item ${controllerName == 'reservationAdmin' ? 'active' : ''}">
+                        <i class="bi bi-bookmark"></i>
+                        <span>Reservations</span>
+                    </g:link>
+                </g:if>
+
+                %{-- روابط MEMBER --}%
+                <g:if test="${session.role == 'MEMBER'}">
+                    <g:link controller="memberArea" action="books"
+                            class="nav-item ${controllerName == 'memberArea' && actionName == 'books' ? 'active' : ''}">
+                        <i class="bi bi-book"></i>
+                        <span>Available Books</span>
+                    </g:link>
+
+                    <g:link controller="memberArea" action="borrowHistory"
+                            class="nav-item ${controllerName == 'memberArea' && actionName == 'borrowHistory' ? 'active' : ''}">
+                        <i class="bi bi-clock-history"></i>
+                        <span>My Borrow History</span>
+                    </g:link>
+
+                    <g:link controller="memberArea" action="reservations"
+                            class="nav-item ${controllerName == 'memberArea' && actionName == 'reservations' ? 'active' : ''}">
+                        <i class="bi bi-bookmark"></i>
+                        <span>My Reservations</span>
+                    </g:link>
+                </g:if>
             </div>
-        </div>
-     %{-- Nav--}%
-    <div class="sidebar-nav">
-            <g:link controller="dashboard" action="index" class="nav-item ${controllerName == 'dashboard' ? 'active' : ''}">
-                <i class="bi bi-grid-1x2"></i>
-                <span>Dashboard</span>
-            </g:link>
 
-            <g:link controller="book" action="index" class="nav-item ${controllerName == 'book' ? 'active' : ''}">
-                <i class="bi bi-book"></i>
-                <span>Books Inventory</span>
-            </g:link>
+            %{-- Logout at bottom (for both ADMIN and MEMBER) --}%
+            <div style="margin-top:auto;padding:8px 4px;">
+                <g:link controller="auth" action="logout"
+                        class="nav-item">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </g:link>
+            </div>
 
-            <g:link controller="category" action="index" class="nav-item ${controllerName == 'category' ? 'active' : ''}">
-                <i class="bi bi-tag"></i>
-                <span>Categories</span>
-            </g:link>
-
-            <g:link controller="borrow" action="index" class="nav-item ${controllerName == 'borrow' ? 'active' : ''}">
-                <i class="bi bi-clock-history"></i>
-                <span>Borrowing System</span>
-            </g:link>
-
-            <g:link controller="member" action="index" class="nav-item ${controllerName == 'member' ? 'active' : ''}">
-                <i class="bi bi-people"></i>
-                <span>Members</span>
-            </g:link>
-            
-            <g:link controller="report" action="index" class="nav-item ${controllerName == 'report' ? 'active' : ''}">
-                <i class="bi bi-bar-chart-line"></i>
-                <span>Reports</span>
-            </g:link>
-    </div>
-
-
-    </aside>
+        </aside>
+    </g:if>
 
     %{--   Main Content    --}%
     <main class="main-content">

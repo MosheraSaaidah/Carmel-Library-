@@ -21,6 +21,35 @@ body { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-
     min-height: 100vh;
 }
 
+/* Auth (login/register) layout: center card, no sidebar margin */
+.auth-page .main-content {
+    /* خلفية خضراء فاتحة ناعمة لصفحات الـLogin/Register */
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    margin-left: 0;
+    width: 100%;
+    min-height: 100vh;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-page .card-white {
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    border-radius: 18px;
+}
+
+/* أزرار الفورم في صفحات Login/Register بنفس لون الخلفية العامة (أخضر فاتح) */
+.auth-page .btn-green {
+    background: #4ade80;
+    color: #065f46;
+}
+
+.auth-page .btn-green:hover {
+    background: #22c55e;
+    color: #065f46;
+}
+
 /* ===== SIDEBAR ===== */
 .sidebar {
     width: var(--sidebar-width);

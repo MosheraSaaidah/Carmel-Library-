@@ -33,7 +33,6 @@ class MemberService {
         def member         = Member.get(id)
         if (!member) return null
         member.fullName    = params.fullName
-        member.email       = params.email
         member.phoneNumber = params.phoneNumber?.toString()?.trim() ?: params.phoneNumber
         member.address     = params.address
         member.save()

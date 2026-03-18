@@ -3,9 +3,15 @@ package alCarmel
 class BorrowController {
 
     BorrowService borrowService
+    SecurityService securityService
+    NotificationService notificationService
 
     // Borrowing System index: loads stats and latest borrow records.
     def index() {
+        if (!securityService.hasRole(session, "ADMIN")) {
+            redirect(controller: 'auth', action: 'login')
+            return 
+        }
         borrowService.updateLateBorrows()
         [
                 borrows      : borrowService.getBorrows(params.filter),
@@ -18,6 +24,10 @@ class BorrowController {
     // Handles a new borrow request. Validates book/member IDs and
     // surfaces any error (e.g. "no copies available", null property) as a toast.
     def save() {
+        if (!securityService.hasRole(session, "ADMIN")) {
+            redirect(controller: 'auth', action: 'login')
+            return
+        }
         def bookId   = params.long('bookId')
         def memberId = params.long('memberId')
         if (!bookId || !memberId) {
@@ -40,10 +50,30 @@ class BorrowController {
 
     // Marks a borrow as returned and restores the available copy.
     def returnBook() {
-        borrowService.returnBookService(params.id as Long)
-        flash.success = 'Book returned successfully'
+        if (!securityService.hasRole(session, "ADMIN")) {
+            redirect(controller: 'auth', action: 'login')
+            return
+        }
+        def lateDays = borrowService.returnBookService(params.id as Long)
+        if (lateDays && lateDays > 0) {
+            flash.success = "Book returned successfully. Late fee: \$${lateDays}"
+        } else {
+            flash.success = 'Book returned successfully. No late fees.'
+        }
         redirect(action: 'index')
     }
 
     // Borrowing records are never deleted; they are kept for history and statistics.
+    def sendNotifications() {
+        if (!securityService.hasRole(session, "ADMIN")) {
+            redirect(controller: 'auth', action: 'login')
+            return
+        }
+
+        notificationService?.sendDueDateReminders()
+        notificationService?.sendLateNotices()
+
+        flash.success = "Notifications sent for due and late borrows (if any)."
+        redirect(action: 'index', params: [filter: params.filter])
+    }
 }

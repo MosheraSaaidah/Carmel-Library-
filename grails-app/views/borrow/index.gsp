@@ -6,9 +6,16 @@
         <div class="page-title">Borrowing System</div>
         <div class="page-subtitle">Track book loans, due dates, and late returns.</div>
     </div>
-    <button class="btn-green" data-bs-toggle="modal" data-bs-target="#addBorrowModal">
-        <i class="bi bi-plus-lg"></i> New Borrowing
-    </button>
+    <div class="d-flex gap-2">
+        <g:link action="sendNotifications"
+                params="[filter: currentFilter]"
+                class="btn btn-outline-secondary">
+            Send Email Notifications
+        </g:link>
+        <button class="btn-green" data-bs-toggle="modal" data-bs-target="#addBorrowModal">
+            <i class="bi bi-plus-lg"></i> New Borrowing
+        </button>
+    </div>
 </div>
 
 <!-- Filter Tabs -->

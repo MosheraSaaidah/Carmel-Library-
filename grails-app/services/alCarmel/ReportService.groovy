@@ -213,6 +213,36 @@ class ReportService {
                     sb.append("${row.year},${row.count}\n")
                 }
                 break
+
+            case "MEMBER_HISTORY":
+                def mh = model.memberHistory
+                sb.append("Book,Borrow Date,Due Date,Return Date,Status\n")
+                if (mh?.borrows) {
+                    def df = new java.text.SimpleDateFormat("yyyy-MM-dd")
+                    mh.borrows.each { Borrow b ->
+                        sb.append("\"${b.book?.bookTitle ?: ''}\",")
+                        sb.append("${b.borrowDate ? df.format(b.borrowDate) : ''},")
+                        sb.append("${b.dueDate ? df.format(b.dueDate) : ''},")
+                        sb.append("${b.returnDate ? df.format(b.returnDate) : ''},")
+                        sb.append("${b.status ?: ''}\n")
+                    }
+                }
+                break
+
+            case "BOOK_HISTORY":
+                def bh = model.bookHistory
+                sb.append("Member,Borrow Date,Due Date,Return Date,Status\n")
+                if (bh?.borrows) {
+                    def df = new java.text.SimpleDateFormat("yyyy-MM-dd")
+                    bh.borrows.each { Borrow b ->
+                        sb.append("\"${b.member?.fullName ?: ''}\",")
+                        sb.append("${b.borrowDate ? df.format(b.borrowDate) : ''},")
+                        sb.append("${b.dueDate ? df.format(b.dueDate) : ''},")
+                        sb.append("${b.returnDate ? df.format(b.returnDate) : ''},")
+                        sb.append("${b.status ?: ''}\n")
+                    }
+                }
+                break
         }
 
         out.write(sb.toString().getBytes("UTF-8"))
@@ -304,6 +334,48 @@ class ReportService {
                 }
                 break
 
+            case "MEMBER_HISTORY":
+                def mh = model.memberHistory
+                if (!mh?.member) {
+                    table = new PdfPTable(1)
+                    table.addCell("No member selected or member not found.")
+                } else {
+                    document.add(new Paragraph("Member: ${mh.member.fullName}"))
+                    document.add(new Paragraph("Total Borrowings: ${mh.totalBorrowings ?: 0} | Late: ${mh.lateBorrows ?: 0} | Total Late Fee (\$): ${mh.totalFees ?: 0}"))
+                    document.add(new Paragraph(" "))
+                    table = new PdfPTable(5)
+                    ["Book", "Borrow Date", "Due Date", "Return Date", "Status"].each { table.addCell(it) }
+                    (mh.borrows ?: []).each { Borrow b ->
+                        table.addCell(b.book?.bookTitle ?: "")
+                        table.addCell(b.borrowDate ? b.borrowDate.toString() : "")
+                        table.addCell(b.dueDate ? b.dueDate.toString() : "")
+                        table.addCell(b.returnDate ? b.returnDate.toString() : "")
+                        table.addCell(b.status ?: "")
+                    }
+                }
+                break
+
+            case "BOOK_HISTORY":
+                def bh = model.bookHistory
+                if (!bh?.book) {
+                    table = new PdfPTable(1)
+                    table.addCell("No book selected or book not found.")
+                } else {
+                    document.add(new Paragraph("Book: ${bh.book.bookTitle}"))
+                    document.add(new Paragraph("Total Borrowings: ${bh.totalBorrowings ?: 0} | Late: ${bh.lateBorrows ?: 0}"))
+                    document.add(new Paragraph(" "))
+                    table = new PdfPTable(5)
+                    ["Member", "Borrow Date", "Due Date", "Return Date", "Status"].each { table.addCell(it) }
+                    (bh.borrows ?: []).each { Borrow b ->
+                        table.addCell(b.member?.fullName ?: "")
+                        table.addCell(b.borrowDate ? b.borrowDate.toString() : "")
+                        table.addCell(b.dueDate ? b.dueDate.toString() : "")
+                        table.addCell(b.returnDate ? b.returnDate.toString() : "")
+                        table.addCell(b.status ?: "")
+                    }
+                }
+                break
+
             default:
                 table = new PdfPTable(1)
                 table.addCell("No data for this report type.")
@@ -334,12 +406,18 @@ class ReportService {
         Long activeTitles = Book.countByActive(true)
         Long archivedTitles = Book.countByActive(false)
 
+        // عدد الكتب التي عليها حجز (ACTIVE أو NOTIFIED) – نعد العناوين المميزة
+        Long reservedTitles = Reservation.executeQuery(
+                "select count(distinct r.book.id) from Reservation r where r.status in ('ACTIVE','NOTIFIED')"
+        )[0] as Long ?: 0L
+
         [
                 totalCopies     : totalBooks,
                 availableCopies : availableBooks,
                 borrowedCopies  : borrowedCopies,
                 activeTitles    : activeTitles,
-                archivedTitles  : archivedTitles
+                archivedTitles  : archivedTitles,
+                reservedTitles  : reservedTitles
         ]
     }
 
@@ -430,7 +508,7 @@ class ReportService {
                 totalBorrowings: borrows.size(),
                 lateBorrows : borrows.count {it.status == "LATE"} ,
                 totalFees : borrows.sum{
-                            b-> if(b.dueDate && b.status in ["BORROWED" ,"RETURNED"])
+                    b-> if(b.dueDate && b.status in ["BORROWED" ,"RETURNED","LATE"])
                             {
                                 def endDay = b.returnDate ?: new Date()
                                 def days = (int)((endDay.time - b.dueDate.time) /  (24 * 60 * 60 * 1000))

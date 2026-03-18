@@ -5,8 +5,20 @@ import javax.sql.DataSource
 class BootStrap {
 
     DataSource dataSource
+    SecurityService securityService
 
-    def init = { ServletContext ->
+    def init = { servletContext ->
+
+        // Ensure there is always a valid ADMIN user with known credentials.
+        def admin = User.findByUsername('admin') ?: new User(username: 'admin')
+        admin.email = 'admin@gmail.com'
+        admin.passwordHash = securityService.encodePassword('admin123')
+        admin.role = 'ADMIN'
+        admin.enabled = true
+        admin.emailConfirmed = true
+        admin.confirmationCode = null
+        admin.save(failOnError: true)
+
         addSoftDeleteColumnsIfMissing()
 
         def defaultCategories = [

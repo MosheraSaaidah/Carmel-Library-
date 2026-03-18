@@ -3,10 +3,16 @@ package alCarmel
 class BookController {
 
     BookService bookService
-
+    SecurityService securityService
+    
     // Books listing page (active only)
     def index() {
-        def books = bookService.getBooks(params.q)
+        if (!securityService.hasRole(session, "ADMIN")) {
+            redirect(controller: 'auth', action: 'login')
+            return
+        }
+        
+        def books = bookService.getBooks(params.p)
         def query = params.q
         if (request.xhr) {
             render(template: 'bookList', model: [books: books, query: query])
@@ -21,6 +27,10 @@ class BookController {
 
     // Archived books list (admin view) — supports AJAX search like index
     def archived() {
+        if (!securityService.hasRole(session, "ADMIN")) {
+            redirect(controller: 'auth', action: 'login')
+            return
+        }
         def books = bookService.getArchivedBooks(params.q)
         def query = params.q
         if (request.xhr) {
@@ -35,6 +45,10 @@ class BookController {
     }
 
     def save() {
+        if (!securityService.hasRole(session, "ADMIN")) {
+            redirect(controller: 'auth', action: 'login')
+            return
+        }
         def book = bookService.saveBook(params)
 
         if (book.hasErrors()) {
@@ -57,6 +71,10 @@ class BookController {
     }
 
     def update() {
+        if (!securityService.hasRole(session, "ADMIN")) {
+            redirect(controller: 'auth', action: 'login')
+            return
+        }
         def book = bookService.updateBook(params.id as Long, params)
         if (!book) {
             flash.error = 'Book not found.'
@@ -84,6 +102,10 @@ class BookController {
 
     // Soft delete: archive book instead of permanent delete
     def archive() {
+        if (!securityService.hasRole(session, "ADMIN")) {
+            redirect(controller: 'auth', action: 'login')
+            return
+        }
         try {
             bookService.archiveBook(params.long('id'))
             flash.success = 'Book archived successfully. It no longer appears in the active list but remains in the database for history.'
@@ -95,6 +117,10 @@ class BookController {
     }
 
     def restore() {
+        if (!securityService.hasRole(session, "ADMIN")) {
+            redirect(controller: 'auth', action: 'login')
+            return
+        }
         try {
             bookService.restoreBook(params.long('id'))
             flash.success = 'Book restored successfully. It is active again.'

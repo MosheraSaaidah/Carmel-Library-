@@ -3,6 +3,7 @@ package alCarmel
 class ReportController {
 
     ReportService reportService
+    SecurityService securityService
 
     static allowedMethods = [
             index      : "GET",
@@ -11,6 +12,11 @@ class ReportController {
     ]
 
     def index() {
+        if (!securityService.hasRole(session, "ADMIN")) {
+            redirect(controller: 'auth', action: 'login')
+            return
+        }
+        
         String reportType = params.reportType ?: "BORROWING"
 
         // Parse optional date filters from params (yyyy-MM-dd)
@@ -27,6 +33,10 @@ class ReportController {
     }
 
     def exportPdf() {
+        if (!securityService.hasRole(session, "ADMIN")) {
+            redirect(controller: 'auth', action: 'login')
+            return
+        }
         String reportType = params.reportType ?: "BORROWING"
         params.fromDate = parseDateParam(params.fromDate)
         params.toDate = parseDateParam(params.toDate)
@@ -38,6 +48,10 @@ class ReportController {
     }
 
     def exportExcel() {
+        if (!securityService.hasRole(session, "ADMIN")) {
+            redirect(controller: 'auth', action: 'login')
+            return
+        }
         String reportType = params.reportType ?: "BORROWING"
         params.fromDate = parseDateParam(params.fromDate)
         params.toDate = parseDateParam(params.toDate)
