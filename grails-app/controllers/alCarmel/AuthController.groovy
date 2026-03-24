@@ -185,8 +185,12 @@ class AuthController {
         Thank you :).
         """
 
-        emailService.sendEmail(email, subject, body)
-        flash.success = "Registration successful. Please check your email and click the confirmation link to activate your account."
+        boolean sent = emailService.sendEmail(email, subject, body)
+        if (sent) {
+            flash.success = "Registration successful. Please check your email and click the confirmation link to activate your account."
+        } else {
+            flash.success = "Your account was created, but the confirmation email could not be sent. For Gmail, use an App Password in Library mail settings (Google Account → Security → App passwords), or ask an administrator to activate your account."
+        }
         redirect(action: 'login')
     }
 

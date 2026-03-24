@@ -1,4 +1,5 @@
 buildscript {
+    ext.kotlin_version = '2.3.0'
     repositories {
         mavenCentral()
         maven {
@@ -10,6 +11,7 @@ buildscript {
         classpath "org.apache.grails:grails-gradle-plugins"
         classpath "org.apache.grails:grails-data-hibernate5"
         classpath "cloud.wondrify:asset-pipeline-gradle"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -17,6 +19,7 @@ version = "0.1"
 group = "alcarmel"
 
 apply plugin:"eclipse"
+apply plugin: 'kotlin'
 apply plugin:"idea"
 apply plugin:"war"
 apply plugin:"org.apache.grails.gradle.grails-web"
@@ -69,6 +72,7 @@ dependencies {
 
     // Reporting exports (PDF)
     implementation "com.github.librepdf:openpdf:1.3.39"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
 compileJava.options.release = 17
@@ -96,5 +100,8 @@ assets {
             'webjars/bootstrap-icons/*/font/bootstrap-icons.css',
             'webjars/bootstrap-icons/*/font/fonts/*',
     ]
+}
+kotlin {
+    jvmToolchain(17)
 }
 

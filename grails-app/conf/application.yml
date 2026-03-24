@@ -1,26 +1,10 @@
 ---
-# قواعد المكتبة — مدة الاستعارة وموعد إرسال التذكيرات
-carmel:
-    borrow:
-        daysUntilDue: -2          # مدة الاستعارة بالأيام (موعد الإرجاع = تاريخ الاستعارة + هذا العدد)
-    notification:
-        reminderDaysBeforeDue: 1  # قبل كم يوم من موعد الإرجاع نرسل تذكير (1 = يوم واحد قبل، 2 = يومين قبل، ...)
-        # جدولة تلقائية يومية واحدة تشغّل بالتسلسل:
-        #   1) تحديث حالة LATE  2) إيميل التذكير قبل الاستحقاق  3) إيميل التأخير (بعد الاستحقاق)
-        dailyScheduleEnabled: true
-        # تعبير cron (ثانية دقيقة ساعة يوم الشهر شهر يوم الأسبوع). مثال: 20:00 كل يوم بتوقيت السيرفر
-        dailyCron: "0 0 20 * * ?"
-     #   dailyCron: "0 55 10 * * ?"
-
-
 grails:
     profile: web
     codegen:
         defaultPackage: alcarmel
     gorm:
         reactor:
-            # Whether to translate GORM events into Reactor events
-            # Disabled by default for performance reasons
             events: false
 info:
     app:
@@ -112,19 +96,6 @@ grails:
                 staticparts: none
 
 ---
-spring:
-    mail:
-        host: smtp.gmail.com
-        port: 587
-        username: "mushera667@gmail.com"
-        password: "oklgiskurfwkivce"
-        properties:
-            mail:
-                smtp:
-                    auth: true
-                    starttls:
-                        enable: true
-
 hibernate:
     dialect: org.hibernate.dialect.H2Dialect
     cache:
@@ -141,9 +112,7 @@ dataSource:
 environments:
     development:
         dataSource:
-            # update = يحفظ البيانات ولا يمسحها عند إعادة التشغيل (بدل create-drop)
             dbCreate: update
-            # ملف على القرص — البيانات تبقى بعد إغلاق التطبيق
             url: jdbc:h2:file:./data/carmelDevDb;LOCK_TIMEOUT=10000
     test:
         dataSource:
@@ -170,4 +139,4 @@ environments:
                 testWhileIdle: true
                 testOnReturn: false
                 jdbcInterceptors: ConnectionState
-                defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
+                defaultTransactionIsolation: 2 

@@ -8,12 +8,11 @@ import java.time.ZoneId
 class BorrowService {
 
     NotificationService notificationService
-    def grailsApplication
-
-    /** عدد أيام الاستعارة حتى موعد الإرجاع (من application.yml: carmel.borrow.daysUntilDue، افتراضي 14) */
+    SettingService settingService
     int getDaysUntilDue() {
-        grailsApplication?.config?.getProperty('carmel.borrow.daysUntilDue', Integer, 14) ?: 14
+        settingService.getInt(SettingService.BORROW_DAY_UNIT_DUE) ?: 14
     }
+
     // Returns all borrows or a subset filtered by status for the
     def getBorrows(String filter) {
         if (!filter || filter == "ALL") {

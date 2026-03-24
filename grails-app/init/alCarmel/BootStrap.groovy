@@ -1,13 +1,18 @@
 package alCarmel
 
+import grails.gorm.transactions.Transactional
 import javax.sql.DataSource
-
+@Transactional
 class BootStrap {
 
     DataSource dataSource
     SecurityService securityService
+    SettingService settingService
+
 
     def init = { servletContext ->
+
+        settingService.initDefaults()
 
         // Ensure there is always a valid ADMIN user with known credentials.
         def admin = User.findByUsername('admin') ?: new User(username: 'admin')
@@ -50,7 +55,6 @@ class BootStrap {
 
     private void addSoftDeleteColumnsIfMissing() {
         def sql = new groovy.sql.Sql(dataSource)
-        // H2: try adding each column; ignore if it already exists
         [
                 [table: 'member', column: 'active', type: 'BOOLEAN DEFAULT TRUE'],
                 [table: 'member', column: 'date_created', type: 'TIMESTAMP'],
