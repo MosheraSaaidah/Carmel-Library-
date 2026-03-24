@@ -6,7 +6,6 @@ import grails.gorm.transactions.Transactional
 class NotificationService {
 
     EmailService emailService
-    NotificationClockService notificationClockService
     def grailsApplication
 
     int getReminderDaysBeforeDue() {
@@ -22,11 +21,7 @@ class NotificationService {
             return
         }
 
-        // PRODUCTION (بدون وضع التجربة):
-        // Date today = new Date()
-        // TESTING: explicitToday من الجدولة، أو من الجلسة/yml عبر NotificationClockService
-        Date today = explicitToday ?: notificationClockService.resolveEffectiveToday(
-                NotificationClockService.currentHttpSession())
+        Date today = explicitToday ?: new Date()
 
         int daysBefore = getReminderDaysBeforeDue()
         Calendar cal = Calendar.getInstance()
@@ -73,11 +68,7 @@ Please return the book on time to avoid late fees.
             return
         }
 
-        // PRODUCTION (بدون وضع التجربة):
-        // Date today = new Date()
-        // TESTING: explicitToday من الجدولة، أو من الجلسة/yml
-        Date today = explicitToday ?: notificationClockService.resolveEffectiveToday(
-                NotificationClockService.currentHttpSession())
+        Date today = explicitToday ?: new Date()
 
         Calendar cal = Calendar.getInstance()
         cal.setTime(today)

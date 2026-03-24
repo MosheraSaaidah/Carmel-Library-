@@ -11,9 +11,7 @@ class BorrowController {
             redirect(controller: 'auth', action: 'login')
             return 
         }
-        // PRODUCTION: borrowService.updateLateBorrows()
-        // TESTING: تمرير الجلسة لاستخدام notificationTestDate بعد تسجيل الدخول
-        borrowService.updateLateBorrows(session)
+        borrowService.updateLateBorrows()
         [
                 borrows      : borrowService.getBorrows(params.filter),
                 currentFilter: params.filter ?: "ALL",
@@ -37,8 +35,7 @@ class BorrowController {
             return
         }
         try {
-            // PRODUCTION: borrowService.borrow(bookId, memberId)
-            borrowService.borrow(bookId, memberId, session)
+            borrowService.borrow(bookId, memberId)
             flash.success = 'Book borrowed successfully'
         } catch (Exception e) {
             def msg = e.message
@@ -56,8 +53,7 @@ class BorrowController {
             redirect(controller: 'auth', action: 'login')
             return
         }
-        // PRODUCTION: borrowService.returnBookService(params.id as Long)
-        def lateDays = borrowService.returnBookService(params.id as Long, session)
+        def lateDays = borrowService.returnBookService(params.id as Long)
         if (lateDays && lateDays > 0) {
             flash.success = "Book returned successfully. Late fee: \$${lateDays}"
         } else {

@@ -5,7 +5,7 @@ class Reservation {
     Book book
     Member member
 
-    String status = "ACTIVE"   // ACTIVE, NOTIFIED, CANCELLED, COMPLETED
+    String status = "ACTIVE"   // ACTIVE, NOTIFIED, CANCELLED
 
     Date dateCreated
     Date lastUpdated
@@ -13,7 +13,7 @@ class Reservation {
     static belongsTo = [book: Book, member: Member]
 
     static constraints = {
-        status inList: ["ACTIVE", "NOTIFIED", "CANCELLED", "COMPLETED"]
+        status inList: ["ACTIVE", "NOTIFIED", "CANCELLED"]
     }
 
     static mapping = {

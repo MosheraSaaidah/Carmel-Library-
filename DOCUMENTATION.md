@@ -26,10 +26,9 @@
 - **تسجيل المستخدمين والأدوار:** كيان `User` (جدول `app_user`) بأدوار **ADMIN** و **MEMBER**، تشفير كلمات المرور (BCrypt) عبر `SecurityService`.
 - **تسجيل الدخول والتسجيل الذاتي:** `AuthController` — تسجيل عضو جديد، رابط تأكيد بالبريد (`confirmEmail`)، تفعيل الحساب بعد التأكيد، حماية الصفحات حسب الدور.
 - **منطقة العضو (Member Area):** تصفح الكتب، استعارة ذاتية، تاريخ استعارات، **حجز** كتاب عند نفاد النسخ، إلغاء الحجز.
-- **الحجوزات:** دومين `Reservation` (حالات ACTIVE / NOTIFIED / CANCELLED / COMPLETED)، `ReservationService`، صفحة أدمن لعرض كل الحجوزات (`ReservationAdminController`).
+- **الحجوزات:** دومين `Reservation` (حالات ACTIVE / NOTIFIED / CANCELLED)، `ReservationService`، صفحة أدمن لعرض كل الحجوزات (`ReservationAdminController`).
 - **البريد الإلكتروني:** `EmailService` + إعدادات `spring.mail` في `application.yml` (مثلاً Gmail / App Password).
 - **الإشعارات:** تذكير قبل موعد الإرجاع، إشعار تأخير مع الرسوم، إشعار عند توفر كتاب محجوز بعد الإرجاع — عبر `NotificationService` و`DailyNotificationSchedulerService` مع `@EnableScheduling` في `Application.groovy`.
-- **ساعة منطقية للاختبار:** `NotificationClockService` + قسم `carmel.notification.testing` في YAML (تاريخ افتراضي في الجلسة، `fixedEffectiveDate` للجدولة، **`borrowStartDaysInPast`** لمحاكاة استعارة متأخرة فوراً).
 - **التقارير:** صفحة مركزية بفلاتر (زمن، تصنيف، عضو، نوع التقرير)، جداول ورسوم Chart.js، تصدير **PDF** (OpenPDF) و**Excel/CSV** عبر `ReportService` و`ReportController`.
 
 ---
@@ -58,7 +57,7 @@
 - `username`، `email`، `passwordHash`، `role` ∈ {`MEMBER`,`ADMIN`}، `enabled`، `emailConfirmed`، `confirmationToken`، `confirmationCode`.
 
 ### 1.6 Reservation — `Reservation.groovy`
-- كتاب، عضو، `status` ∈ {`ACTIVE`,`NOTIFIED`,`CANCELLED`,`COMPLETED`}، طوابع زمنية.
+- كتاب، عضو، `status` ∈ {`ACTIVE`,`NOTIFIED`,`CANCELLED`}، طوابع زمنية.
 
 ---
 
@@ -70,11 +69,10 @@
 
 ### 2.2 BorrowService
 - `getDaysUntilDue()` — من `carmel.borrow.daysUntilDue` (افتراضي 14).
-- `getBorrowStartDaysInPast()` — عند تفعيل وضع الاختبار، لقراءة `carmel.notification.testing.borrowStartDaysInPast`.
 - `getBorrows(filter)` — فلترة حسب الحالة أو الكل.
-- `borrow(bookId, memberId, httpSession)` — قواعد العمل: كتاب/عضو نشطان، نسخ متاحة، تصنيف موجود، منع تكرار الاستعارة النشطة لنفس الزوج؛ حساب `borrowDate`/`dueDate` مع **ساعة الاختبار** واختيياً **رجوع تاريخ الاستعارة** (`borrowStartDaysInPast`); تقليل `availableCopies`.
-- `returnBookService(borrowId, httpSession)` — تاريخ إرجاع حسب ساعة الاختبار؛ حساب أيام التأخير؛ `status` = `LATE` إن كان متأخراً وإلا `RETURNED`؛ زيادة النسخ؛ استدعاء `notificationService.notifyReservationsForBook` عند توفر نسخ.
-- `updateLateBorrows(httpSession)` — تحويل `BORROWED` ذات `dueDate` قبل بداية «اليوم الفعلي» إلى `LATE`.
+- `borrow(bookId, memberId)` — قواعد العمل: كتاب/عضو نشطان، نسخ متاحة، تصنيف موجود، منع تكرار الاستعارة النشطة لنفس الزوج؛ حساب `borrowDate`/`dueDate` من تاريخ اليوم الفعلي؛ تقليل `availableCopies`.
+- `returnBookService(borrowId)` — تاريخ إرجاع = وقت الإرجاع الفعلي؛ حساب أيام التأخير؛ `status` = `LATE` إن كان متأخراً وإلا `RETURNED`؛ زيادة النسخ؛ استدعاء `notificationService.notifyReservationsForBook` عند توفر نسخ.
+- `updateLateBorrows()` — تحويل `BORROWED` ذات `dueDate` قبل بداية اليوم الحالي إلى `LATE`.
 
 ### 2.3 BookService / MemberService / CategoryService
 - بحث، حفظ، تحديث، أرشفة/استرجاع مع التحقق من عدم وجود استعارات نشطة؛ تعديل النسخ عند تغيير `totalCopies`.
@@ -93,18 +91,14 @@
 
 ### 2.7 NotificationService
 - `getReminderDaysBeforeDue()` من YAML.
-- `sendDueDateReminders(explicitToday)` — استعارات `BORROWED` بموعد استحقاق في يوم التذكير (حسب `reminderDaysBeforeDue`).
-- `sendLateNotices(explicitToday)` — استعارات متأخرة غير مُرجَعة؛ نص ديناميكي بالأيام والرسوم ($1/يوم).
+- `sendDueDateReminders(explicitToday)` — استعارات `BORROWED` بموعد استحقاق في يوم التذكير (حسب `reminderDaysBeforeDue`)؛ التاريخ الافتراضي هو اليوم الحالي إن لم يُمرَّر `explicitToday` (مفيد في اختبارات الوحدة).
+- `sendLateNotices(explicitToday)` — استعارات متأخرة غير مُرجَعة؛ نص ديناميكي بالأيام والرسوم ($1/يوم)؛ نفس اختيارية التاريخ.
 - `notifyReservationsForBook(book)` — بعد الإرجاع إن توفرت نسخ؛ إيميل للمحجوزين وتغيير الحالة إلى `NOTIFIED`.
 
-### 2.8 NotificationClockService
-- في الإنتاج: «اليوم» = التاريخ الحالي.
-- في الاختبار (`carmel.notification.testing.enabled: true`): من جلسة `notificationTestDate` (يُضبط عند تسجيل الدخول من `virtualTodayOnLogin`) أو من `fixedEffectiveDate` للمهام بدون HTTP (الجدولة).
+### 2.8 DailyNotificationSchedulerService
+- `@Scheduled(cron = '${carmel.notification.dailyCron:...}')` — إن `dailyScheduleEnabled` مفعّل: `updateLateBorrows()` ثم `sendDueDateReminders()` و`sendLateNotices()` بتاريخ اليوم الفعلي.
 
-### 2.9 DailyNotificationSchedulerService
-- `@Scheduled(cron = '${carmel.notification.dailyCron:...}')` — إن `dailyScheduleEnabled` مفعّل: `updateLateBorrows(null)` ثم `sendDueDateReminders` و`sendLateNotices` مع `resolveEffectiveToday(null)`.
-
-### 2.10 ReservationService
+### 2.9 ReservationService
 - `createReservation`، `cancelReservation` مع قواعد التوفّر وتجنب التكرار.
 
 ---
@@ -117,9 +111,9 @@
 | `BookController` | الكتب والأرشيف |
 | `MemberController` | الأعضاء |
 | `CategoryController` | التصنيفات |
-| `BorrowController` | الاستعارة (يمرّر `session` لـ BorrowService) |
+| `BorrowController` | الاستعارة |
 | `ReportController` | التقارير؛ `exportPdf` و`exportExcel` بنفس الفلاتر |
-| `AuthController` | دخول، تسجيل، تأكيد بريد، ضبط تاريخ الاختبار في الجلسة عند التفعيل |
+| `AuthController` | دخول، تسجيل، تأكيد بريد |
 | `MemberAreaController` | واجهة العضو (كتب، استعارة، حجوزات) |
 | `ReservationAdminController` | قائمة الحجوزات للأدمن |
 
@@ -144,20 +138,11 @@ carmel:
     reminderDaysBeforeDue: 1
     dailyScheduleEnabled: true
     dailyCron: "0 0 20 * * ?"
-    testing:
-      enabled: false
-      virtualTodayOnLogin: "yyyy-MM-dd"
-      fixedEffectiveDate: "yyyy-MM-dd"
-      borrowStartDaysInPast: 0
 ```
 
 - **`daysUntilDue`:** مدة الاستعارة بالأيام من تاريخ بداية الاستعارة المحسوب.
 - **`reminderDaysBeforeDue`:** قبل كم يوم من الاستحقاق يُرسل التذكير.
 - **`dailyScheduleEnabled` / `dailyCron`:** تشغيل يومي: تحديث LATE ثم التذكير ثم إشعارات التأخير (توقيت السيرفر).
-- **وضع الاختبار:**
-  - `enabled: true` + `virtualTodayOnLogin`: عند تسجيل الدخول يُخزَّن التاريخ في الجلسة كـ «اليوم».
-  - `fixedEffectiveDate`: نفس المعنى للجدولة (بدون جلسة).
-  - `borrowStartDaysInPast`: مثلاً **15** مع `daysUntilDue: 14` يجعل موعد الإرجاع **قبل** «اليوم» بيوم واحد → تظهر **LATE** مباشرة بعد فتح صفحة الاستعارة.
 
 **البريد:** إعداد `spring.mail` (مضيف، منفذ، مستخدم، كلمة مرور) في نفس الملف أو profile.
 
@@ -167,9 +152,9 @@ carmel:
 
 ## 6. التحقق من LATE والإيميل (اختبار يدوي)
 
-1. **تحديث الحالة:** فتح **Borrowing System** يستدعي `updateLateBorrows(session)`؛ الجدولة اليومية تفعل ذلك أيضاً لأي استعارة `BORROWED` و`dueDate` قبل بداية اليوم.
+1. **تحديث الحالة:** فتح **Borrowing System** يستدعي `updateLateBorrows()`؛ الجدولة اليومية تفعل ذلك أيضاً لأي استعارة `BORROWED` و`dueDate` قبل بداية اليوم.
 2. **الإرجاع المتأخر:** زر الإرجاع يعرض رسوم التأخير؛ الحالة تُسجَّل `LATE` عند التأخير.
-3. **التذكير:** استعارة `BORROWED` بموعد استحقاق يطابق منطق `reminderDaysBeforeDue`؛ انتظار `dailyCron` أو تغييره مؤقتاً للتجربة (مثلاً كل دقيقة).
+3. **التذكير:** استعارة `BORROWED` بموعد استحقاق يطابق منطق `reminderDaysBeforeDue`؛ انتظار وقت `dailyCron` أو تعديله مؤقتاً إن احتجت اختباراً أسرع.
 4. **إشعار التأخير:** استعارة متأخرة غير مُرجَعة عند تشغيل الجدولة.
 5. **فشل الإرسال:** مراجعة الـ console وإعدادات SMTP.
 
@@ -184,10 +169,10 @@ carmel:
 `AuthController.registerMember` → إنشاء `User` + `Member` → إيميل تأكيد → `confirmEmail` يفعّل الحساب.
 
 ### استعارة (أدمن)
-`BorrowController.save` → `BorrowService.borrow(..., session)` → حفظ الاستعارة وتقليل النسخ.
+`BorrowController.save` → `BorrowService.borrow(...)` → حفظ الاستعارة وتقليل النسخ.
 
 ### إرجاع
-`BorrowController.returnBook` → `returnBookService(..., session)` → تحديث الحالة والنسخ وإشعار الحجوزات إن انطبق.
+`BorrowController.returnBook` → `returnBookService(...)` → تحديث الحالة والنسخ وإشعار الحجوزات إن انطبق.
 
 ### أرشفة كتاب/عضو
 التحقق من عدم وجود استعارات نشطة → `active = false` وحقول الأرشفة.

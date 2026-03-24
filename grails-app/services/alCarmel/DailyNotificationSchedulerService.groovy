@@ -10,7 +10,6 @@ class DailyNotificationSchedulerService {
 
     BorrowService borrowService
     NotificationService notificationService
-    NotificationClockService notificationClockService
     def grailsApplication
 
     @Scheduled(cron = '${carmel.notification.dailyCron:0 0 20 * * ?}')
@@ -20,14 +19,8 @@ class DailyNotificationSchedulerService {
         if (Boolean.FALSE == enabled) {
             return
         }
-        // PRODUCTION (لا يوجد تاريخ افتراضي في الجلسة):
-        // borrowService.updateLateBorrows()
-        // notificationService.sendDueDateReminders()
-        // notificationService.sendLateNotices()
-        // TESTING: نفس اليوم الافتراضي للجدولة (fixedEffectiveDate) يُمرَّر صراحةً
-        Date effectiveToday = notificationClockService.resolveEffectiveToday(null)
-        borrowService.updateLateBorrows(null)
-        notificationService.sendDueDateReminders(effectiveToday)
-        notificationService.sendLateNotices(effectiveToday)
+        borrowService.updateLateBorrows()
+        notificationService.sendDueDateReminders()
+        notificationService.sendLateNotices()
     }
 }

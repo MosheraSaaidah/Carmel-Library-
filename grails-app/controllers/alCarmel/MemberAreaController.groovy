@@ -83,8 +83,7 @@ class MemberAreaController {
         }
 
         try {
-            // PRODUCTION: borrowService.borrow(bookId, member.id)
-            borrowService.borrow(bookId, member.id, session)
+            borrowService.borrow(bookId, member.id)
             flash.success = "Book borrowed successfully."
         } catch (Exception e) {
             flash.error = e.message ?: "Unable to borrow this book."

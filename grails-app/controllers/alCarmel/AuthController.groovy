@@ -53,17 +53,6 @@ class AuthController {
         session.userId = user.id
         session.role = user.role
 
-        // PRODUCTION: لا يُخزَّن notificationTestDate في الجلسة (enabled: false في application.yml).
-        // TESTING: enabled: true + virtualTodayOnLogin → عند تسجيل الدخول يصبح "اليوم" الافتراضي للتأخير/التذكير/الاستعارة.
-        if (grailsApplication?.config?.getProperty('carmel.notification.testing.enabled', Boolean, false)) {
-            String virtualToday = grailsApplication?.config?.getProperty(
-                    'carmel.notification.testing.virtualTodayOnLogin', String, null)
-            if (virtualToday) {
-                session.setAttribute(NotificationClockService.SESSION_NOTIFICATION_TEST_DATE,
-                        Date.parse('yyyy-MM-dd', virtualToday))
-            }
-        }
-
         if(user.role == 'ADMIN')
         {
             redirect(controller: 'dashboard', action: 'index')
