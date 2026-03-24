@@ -5,10 +5,7 @@ class MemberAreaController {
     BorrowService borrowService
     ReservationService reservationService
 
-    /**
-     * يعرض للميمبر كل الكتب المتاحة (active + availableCopies > 0)
-     * ويُظهر له إن كان لديه حجز على كتاب معيّن.
-     */
+   
     def books() {
         if (!securityService.hasRole(session, "MEMBER")) {
             redirect(controller: 'auth', action: 'login')
@@ -35,9 +32,7 @@ class MemberAreaController {
         [member: member, books: books, reservedBookIds: reservedBookIds]
     }
 
-    /**
-     * يعرض للميمبر تاريخ الاستعارات الخاصة به.
-     */
+    
     def borrowHistory() {
         if (!securityService.hasRole(session, "MEMBER")) {
             redirect(controller: 'auth', action: 'login')
@@ -54,10 +49,7 @@ class MemberAreaController {
         def borrows = Borrow.findAllByMember(member, [sort: 'borrowDate', order: 'desc'])
         [member: member, borrows: borrows]
     }
-
-    /**
-     * يعرض للميمبر حجوزاته الحالية والقديمة.
-     */
+    
     def reservations() {
         if (!securityService.hasRole(session, "MEMBER")) {
             redirect(controller: 'auth', action: 'login')
@@ -75,9 +67,7 @@ class MemberAreaController {
         [member: member, reservations: reservations]
     }
 
-    /**
-     * يسمح للميمبر أن يستعير كتاباً مباشرة إذا كان متوفراً.
-     */
+   
     def borrow(Long bookId) {
         if (!securityService.hasRole(session, "MEMBER")) {
             redirect(controller: 'auth', action: 'login')
@@ -93,17 +83,15 @@ class MemberAreaController {
         }
 
         try {
-            borrowService.borrow(bookId, member.id)
+            // PRODUCTION: borrowService.borrow(bookId, member.id)
+            borrowService.borrow(bookId, member.id, session)
             flash.success = "Book borrowed successfully."
         } catch (Exception e) {
             flash.error = e.message ?: "Unable to borrow this book."
         }
         redirect(action: 'books')
     }
-
-    /**
-     * يسمح للميمبر أن يحجز كتاباً إذا لم تتوفر له نسخ حالياً.
-     */
+   
     def reserve(Long bookId) {
         if (!securityService.hasRole(session, "MEMBER")) {
             redirect(controller: 'auth', action: 'login')
@@ -127,9 +115,7 @@ class MemberAreaController {
         redirect(action: 'books')
     }
 
-    /**
-     * يسمح للميمبر بإلغاء حجزه.
-     */
+   
     def cancelReservation(Long id) {
         if (!securityService.hasRole(session, "MEMBER")) {
             redirect(controller: 'auth', action: 'login')

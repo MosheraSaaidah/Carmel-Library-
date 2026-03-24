@@ -4,7 +4,6 @@ class BorrowController {
 
     BorrowService borrowService
     SecurityService securityService
-    NotificationService notificationService
 
     // Borrowing System index: loads stats and latest borrow records.
     def index() {
@@ -12,7 +11,9 @@ class BorrowController {
             redirect(controller: 'auth', action: 'login')
             return 
         }
-        borrowService.updateLateBorrows()
+        // PRODUCTION: borrowService.updateLateBorrows()
+        // TESTING: تمرير الجلسة لاستخدام notificationTestDate بعد تسجيل الدخول
+        borrowService.updateLateBorrows(session)
         [
                 borrows      : borrowService.getBorrows(params.filter),
                 currentFilter: params.filter ?: "ALL",
@@ -36,7 +37,8 @@ class BorrowController {
             return
         }
         try {
-            borrowService.borrow(bookId, memberId)
+            // PRODUCTION: borrowService.borrow(bookId, memberId)
+            borrowService.borrow(bookId, memberId, session)
             flash.success = 'Book borrowed successfully'
         } catch (Exception e) {
             def msg = e.message
@@ -54,26 +56,13 @@ class BorrowController {
             redirect(controller: 'auth', action: 'login')
             return
         }
-        def lateDays = borrowService.returnBookService(params.id as Long)
+        // PRODUCTION: borrowService.returnBookService(params.id as Long)
+        def lateDays = borrowService.returnBookService(params.id as Long, session)
         if (lateDays && lateDays > 0) {
             flash.success = "Book returned successfully. Late fee: \$${lateDays}"
         } else {
             flash.success = 'Book returned successfully. No late fees.'
         }
         redirect(action: 'index')
-    }
-
-    // Borrowing records are never deleted; they are kept for history and statistics.
-    def sendNotifications() {
-        if (!securityService.hasRole(session, "ADMIN")) {
-            redirect(controller: 'auth', action: 'login')
-            return
-        }
-
-        notificationService?.sendDueDateReminders()
-        notificationService?.sendLateNotices()
-
-        flash.success = "Notifications sent for due and late borrows (if any)."
-        redirect(action: 'index', params: [filter: params.filter])
     }
 }

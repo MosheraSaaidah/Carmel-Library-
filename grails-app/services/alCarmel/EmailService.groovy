@@ -9,7 +9,7 @@ import org.springframework.mail.javamail.JavaMailSender
 class EmailService {
 
     JavaMailSender mailSender
-   void sendEmail(String to , String subject ,String body){
+    void sendEmail(String to , String subject ,String body){
 
        if (!mailSender) {
            return

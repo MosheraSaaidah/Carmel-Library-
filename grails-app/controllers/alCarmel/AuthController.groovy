@@ -52,6 +52,18 @@ class AuthController {
 
         session.userId = user.id
         session.role = user.role
+
+        // PRODUCTION: لا يُخزَّن notificationTestDate في الجلسة (enabled: false في application.yml).
+        // TESTING: enabled: true + virtualTodayOnLogin → عند تسجيل الدخول يصبح "اليوم" الافتراضي للتأخير/التذكير/الاستعارة.
+        if (grailsApplication?.config?.getProperty('carmel.notification.testing.enabled', Boolean, false)) {
+            String virtualToday = grailsApplication?.config?.getProperty(
+                    'carmel.notification.testing.virtualTodayOnLogin', String, null)
+            if (virtualToday) {
+                session.setAttribute(NotificationClockService.SESSION_NOTIFICATION_TEST_DATE,
+                        Date.parse('yyyy-MM-dd', virtualToday))
+            }
+        }
+
         if(user.role == 'ADMIN')
         {
             redirect(controller: 'dashboard', action: 'index')
@@ -73,7 +85,6 @@ class AuthController {
      */
     @Transactional
     def registerMember() {
-        // لو المستخدم مسجل دخول، لا نسمح له بالتسجيل مرة أخرى
         if (securityService.isLoggedIn(session)) {
             def currentUser = securityService.getCurrentUser(session)
             if (currentUser?.role == 'ADMIN') {
@@ -179,11 +190,11 @@ class AuthController {
         String confirmationLink = "http://localhost:8080/auth/confirmEmail?token=${token}"
         String body = """Hello ${fullName},
 
-Please Confirm link:
-${confirmationLink}
-
-Thank you.
-"""
+        Please Confirm link:
+        ${confirmationLink}
+        
+        Thank you :).
+        """
 
         emailService.sendEmail(email, subject, body)
         flash.success = "Registration successful. Please check your email and click the confirmation link to activate your account."
@@ -191,7 +202,7 @@ Thank you.
     }
 
     /**
-     * Email confirmation using token from email link (preferred).
+     * Email confirmation using token from email link .
      */
     @Transactional
     def confirmEmail() {
@@ -214,7 +225,7 @@ Thank you.
         user.confirmationToken = null
         user.save(flush: true)
 
-        flash.success = "Your email has been confirmed. You can now log in."
+        flash.success = "Your email has been confirmed. You can now log in :)"
         redirect(action: 'login')
     }
 }

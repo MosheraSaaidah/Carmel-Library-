@@ -23,8 +23,8 @@ body { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-
 
 /* Auth (login/register) layout: center card, no sidebar margin */
 .auth-page .main-content {
-    /* خلفية خضراء فاتحة ناعمة لصفحات الـLogin/Register */
-    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    /* Background slightly darker to match app green theme */
+    background: linear-gradient(135deg, #14532d, var(--green-primary));
     margin-left: 0;
     width: 100%;
     min-height: 100vh;
@@ -35,19 +35,19 @@ body { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-
 }
 
 .auth-page .card-white {
-    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.22);
     border-radius: 18px;
 }
 
-/* أزرار الفورم في صفحات Login/Register بنفس لون الخلفية العامة (أخضر فاتح) */
+/* Auth buttons: use the same green as the rest of the app */
 .auth-page .btn-green {
-    background: #4ade80;
-    color: #065f46;
+    background: var(--green-primary);
+    color: #ffffff;
 }
 
 .auth-page .btn-green:hover {
-    background: #22c55e;
-    color: #065f46;
+    background: #15803d;
+    color: #ffffff;
 }
 
 /* ===== SIDEBAR ===== */

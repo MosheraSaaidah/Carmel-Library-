@@ -6,9 +6,9 @@ import grails.gorm.transactions.Transactional
 class NotificationService {
 
     EmailService emailService
+    NotificationClockService notificationClockService
     def grailsApplication
 
-    /** قبل كم يوم من موعد الإرجاع نرسل التذكير (من application.yml: carmel.notification.reminderDaysBeforeDue، افتراضي 1) */
     int getReminderDaysBeforeDue() {
         grailsApplication?.config?.getProperty('carmel.notification.reminderDaysBeforeDue', Integer, 1) ?: 1
     }
@@ -17,10 +17,16 @@ class NotificationService {
      * Send reminder emails for borrows whose due date is in N days (N = reminderDaysBeforeDue).
      * Example: if reminderDaysBeforeDue = 1 → send for books due tomorrow; if 2 → due in 2 days.
      */
-    void sendDueDateReminders(Date today = new Date()) {
+    void sendDueDateReminders(Date explicitToday = null) {
         if (!emailService) {
             return
         }
+
+        // PRODUCTION (بدون وضع التجربة):
+        // Date today = new Date()
+        // TESTING: explicitToday من الجدولة، أو من الجلسة/yml عبر NotificationClockService
+        Date today = explicitToday ?: notificationClockService.resolveEffectiveToday(
+                NotificationClockService.currentHttpSession())
 
         int daysBefore = getReminderDaysBeforeDue()
         Calendar cal = Calendar.getInstance()
@@ -62,10 +68,16 @@ Please return the book on time to avoid late fees.
      * Late fee = $1 per day after the due date.
      * Email text is dynamic based on days late and total fee.
      */
-    void sendLateNotices(Date today = new Date()) {
+    void sendLateNotices(Date explicitToday = null) {
         if (!emailService) {
             return
         }
+
+        // PRODUCTION (بدون وضع التجربة):
+        // Date today = new Date()
+        // TESTING: explicitToday من الجدولة، أو من الجلسة/yml
+        Date today = explicitToday ?: notificationClockService.resolveEffectiveToday(
+                NotificationClockService.currentHttpSession())
 
         Calendar cal = Calendar.getInstance()
         cal.setTime(today)

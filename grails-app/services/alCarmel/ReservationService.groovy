@@ -7,12 +7,21 @@ class ReservationService {
 
     /**
      * Creates a reservation for a member on a book (when no copies available).
-     * Returns [success: boolean, errorMessage: String or null]
      */
     Map<String, Object> createReservation(Long bookId, Member member) {
         def book = Book.get(bookId)
         if (!book || !book.active) {
             return [success: false, errorMessage: "Book not found."]
+        }
+        // If the member already has this book borrowed, reserving it makes no sense.
+        def activeBorrowCount = Borrow.withCriteria {
+            eq 'book', book
+            eq 'member', member
+            'in'('status', ['BORROWED', 'LATE'])
+            projections { rowCount() }
+        }[0] ?: 0
+        if (activeBorrowCount > 0) {
+            return [success: false, errorMessage: "You already borrowed this book. Return it first before reserving again."]
         }
         if (book.availableCopies > 0) {
             return [success: false, errorMessage: "This book is available. You can borrow it directly instead of reserving."]

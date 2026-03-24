@@ -10,6 +10,7 @@ class User {
     Boolean emailConfirmed = false
     String confirmationToken
     String confirmationCode
+   
 
     Date dateCreated
     Date lastUpdated
@@ -20,7 +21,7 @@ class User {
         passwordHash     blank: false
         role             inList: ["MEMBER", "ADMIN"]
         confirmationToken nullable: true
-        confirmationCode  nullable: true
+        confirmationCode nullable:true
     }
 
     static mapping = {
