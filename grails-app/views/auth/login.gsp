@@ -13,6 +13,13 @@
         </div>
     </div>
 
+<<<<<<< HEAD
+=======
+    <g:if test="${flash.error}">
+        <div class="alert alert-danger">${flash.error}</div>
+    </g:if>
+
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
     <!-- Login form -->
     <g:form action="login" method="post" style="text-align:left;">
         <div class="mb-3">

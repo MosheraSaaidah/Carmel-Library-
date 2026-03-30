@@ -9,7 +9,11 @@ class NotificationService {
     SettingService settingService
 
     int getReminderDaysBeforeDue() {
+<<<<<<< HEAD
         settingService.getInt(SettingKey.NOTIFICATION_REMINDER_DAYS) ?: 1
+=======
+        settingService.getInt(SettingService.NOTIF_REMINDER_DAYS_BEFORE_DUE) ?:1
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
     }
 
     

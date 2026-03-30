@@ -3,6 +3,16 @@
 <div class="card-white" style="max-width:400px;margin:40px auto;">
     <h2>Confirm Email</h2>
 
+<<<<<<< HEAD
+=======
+    <g:if test="${flash.error}">
+        <div class="alert alert-danger">${flash.error}</div>
+    </g:if>
+    <g:if test="${flash.success}">
+        <div class="alert alert-success">${flash.success}</div>
+    </g:if>
+
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
     <p>Please enter the email you used for registration and the confirmation code sent to you.</p>
 
     <g:form action="confirmCode" method="post">

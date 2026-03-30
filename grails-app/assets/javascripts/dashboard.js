@@ -19,7 +19,11 @@ document.addEventListener('DOMContentLoaded', function () {
         data: {
             labels: labels,
             datasets: [{
+<<<<<<< HEAD
                 label: (canvas.dataset.chartLabel || 'Books Borrowed'),
+=======
+                label: 'Books Borrowed',
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
                 data: values,
                 borderColor: '#16a34a',
                 backgroundColor: 'rgba(22,163,74,0.08)',

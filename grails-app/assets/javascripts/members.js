@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 document.addEventListener('DOMContentLoaded', function () {
     var modalEl = document.getElementById('editMemberModal');
     if (!modalEl) {
@@ -42,3 +43,14 @@ function openEditMember(id, fullName, email, phoneNumber, address) {
     phoneEl.value = phoneNumber;
     addrEl.value = address || '';
 }
+=======
+function openEditMember(id, fullName, email, phoneNumber, address) {
+    document.getElementById('editMemberId').value  = id;
+    document.getElementById('editFullName').value  = fullName;
+    document.getElementById('editEmail').value     = email;
+    document.getElementById('editPhone').value     = phoneNumber;
+    document.getElementById('editAddress').value   = address;
+
+    new bootstrap.Modal(document.getElementById('editMemberModal')).show();
+}
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e

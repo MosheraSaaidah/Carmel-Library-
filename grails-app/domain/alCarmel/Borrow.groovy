@@ -35,7 +35,11 @@ class Borrow {
                             .atStartOfDay(ZoneId.systemDefault()).toInstant()
             )
         }
+<<<<<<< HEAD
       
+=======
+        // returnDate يبقى null حتى إرجاع الكتاب
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
     }
 
     boolean isLate() {

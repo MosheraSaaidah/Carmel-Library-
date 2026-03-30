@@ -16,6 +16,7 @@
         </div>
         <div class="book-actions">
             <button type="button" class="btn-edit btn-edit-book"
+<<<<<<< HEAD
                     data-bs-toggle="modal"
                     data-bs-target="#editBookModal"
                     data-id="${book.id}">
@@ -24,6 +25,19 @@
             <g:form action="archive" method="post" style="display:inline" class="archive-confirm-form"
                     data-archive-title="Archive this book?"
                     data-archive-text="It will not appear in the active list but remain in the database for history.">
+=======
+                    data-id="${book.id}"
+                    data-title="${book.bookTitle}"
+                    data-author="${book.authorName}"
+                    data-description="${book.description ?: ''}"
+                    data-total-copies="${book.totalCopies}"
+                    data-publish-year="${book.publishYear ?: 0}"
+                    data-category-id="${book.category?.id ?: 0}">
+                <i class="bi bi-pencil"></i> Edit
+            </button>
+            <g:form action="archive" method="post" style="display:inline"
+                    onsubmit="return confirm('Archive this book? It will not appear in the active list but remain in the database for history.');">
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
                 <input type="hidden" name="id" value="${book.id}"/>
                 <button type="submit" class="btn-delete" title="Archive book">
                     <i class="bi bi-archive"></i>

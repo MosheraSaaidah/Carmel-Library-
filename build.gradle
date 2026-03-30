@@ -63,9 +63,12 @@ dependencies {
     runtimeOnly "com.h2database:h2"
     runtimeOnly "com.zaxxer:HikariCP"
     runtimeOnly "cloud.wondrify:asset-pipeline-grails"
+<<<<<<< HEAD
     // Asset pipeline JS uses Graal polyglot; missing classes → 500 on /assets/*.js (edit modal empty). apache/grails-core#13913
     runtimeOnly "org.graalvm.sdk:graal-sdk:24.2.2"
     runtimeOnly "org.graalvm.js:js-community:24.2.2"
+=======
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
     testAndDevelopmentOnly "org.webjars.npm:bootstrap"
     testAndDevelopmentOnly "org.webjars.npm:bootstrap-icons"
     testAndDevelopmentOnly "org.webjars.npm:jquery"

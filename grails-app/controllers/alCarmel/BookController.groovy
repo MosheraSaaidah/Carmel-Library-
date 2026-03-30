@@ -1,11 +1,15 @@
 package alCarmel
 
+<<<<<<< HEAD
 import groovy.json.JsonOutput
 
+=======
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
 class BookController {
 
     BookService bookService
     SecurityService securityService
+<<<<<<< HEAD
 
     /**
      * JSON payload for the edit-book modal (single source of truth; avoids fragile data-* attributes).
@@ -34,6 +38,8 @@ class BookController {
         ]
         render(contentType: 'application/json; charset=UTF-8', text: JsonOutput.toJson(data))
     }
+=======
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
     
     // Books listing page (active only)
     def index() {
@@ -105,6 +111,7 @@ class BookController {
             redirect(controller: 'auth', action: 'login')
             return
         }
+<<<<<<< HEAD
         def idStr = params.id?.toString()?.trim()
         if (!idStr || !idStr.isLong()) {
             flash.error = 'Book not found.'
@@ -112,6 +119,9 @@ class BookController {
             return
         }
         def book = bookService.updateBook(idStr.toLong(), params)
+=======
+        def book = bookService.updateBook(params.id as Long, params)
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
         if (!book) {
             flash.error = 'Book not found.'
             redirect(action: 'index')
@@ -120,6 +130,7 @@ class BookController {
         if (book.hasErrors()) {
             def errorMsg = 'Please check the book details and try again.'
             def titleError = book.errors.getFieldError('bookTitle')
+<<<<<<< HEAD
             def copiesError = book.errors.getFieldError('totalCopies')
             def yearError = book.errors.getFieldError('publishYear')
             def catError = book.errors.getFieldError('category')
@@ -131,6 +142,15 @@ class BookController {
                 errorMsg = copiesError?.defaultMessage ?: yearError?.defaultMessage ?: catError?.defaultMessage ?: errorMsg
             } else if (yearError?.code == 'futureYear') {
                 errorMsg = 'Publish year cannot be in the future.'
+=======
+            if (titleError?.code == 'unique') {
+                errorMsg = 'Another book by this author already uses this title.'
+            } else {
+                def yearError = book.errors.getFieldError('publishYear')
+                if (yearError?.code == 'futureYear') {
+                    errorMsg = 'Publish year cannot be in the future.'
+                }
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
             }
             flash.error = errorMsg
             redirect(action: 'index', params: [q: params.q])

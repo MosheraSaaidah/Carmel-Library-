@@ -3,8 +3,11 @@
   Extracted from `index.gsp` so the page layout remains focused
   on the list, and the form markup is reusable/maintainable.
 --}%
+<<<<<<< HEAD
 <span id="book-page-api-config" class="visually-hidden" aria-hidden="true"
       data-book-edit-base="${createLink(controller: 'book', action: 'edit')}"></span>
+=======
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
 
 <!-- ===== ADD MODAL ===== -->
 <div class="modal fade" id="addBookModal" tabindex="-1">
@@ -64,11 +67,21 @@
 
                     <div class="form-group-custom">
                         <label>CATEGORY</label>
+<<<<<<< HEAD
                         <select required name="categoryId" id="addCategoryId" class="input-custom">
                             <option value="">Select category...</option>
                             <g:each in="${categories}" var="cat">
                                 <option value="${cat.id}">${cat.categoryName}</option>
                             </g:each>
+=======
+                        <select required name="categoryId" class="input-custom">
+                            <option value="">Select category...</option>
+
+                            <g:each in="${categories}" var="cat">
+                                <option value="${cat.id}">${cat.categoryName}</option>
+                            </g:each>
+
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
                         </select>
                     </div>
 
@@ -145,11 +158,20 @@
 
                     <div class="form-group-custom">
                         <label>CATEGORY</label>
+<<<<<<< HEAD
                         <select required name="categoryId" id="editCategoryId" class="input-custom">
+=======
+                        <select required name="categoryId" id="editCategoryId"
+                                class="input-custom">
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
                             <option value="">Select category...</option>
                             <g:each in="${categories}" var="cat">
                                 <option value="${cat.id}">${cat.categoryName}</option>
                             </g:each>
+<<<<<<< HEAD
+=======
+
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
                         </select>
                     </div>
 

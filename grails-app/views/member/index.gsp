@@ -24,10 +24,15 @@
             <th>ACTIONS</th>
         </tr>
         </thead>
+<<<<<<< HEAD
         <tbody id="membersTableBody">
         <g:each in="${members}" var="member">
             <g:set var="memberNameAttr" value="${(member.fullName ?: '').replaceAll(/\s+/, ' ').trim()}"/>
             <g:set var="memberAddrAttr" value="${(member.address ?: '').replaceAll(/\s+/, ' ').trim()}"/>
+=======
+        <tbody>
+        <g:each in="${members}" var="member">
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
             <tr>
                 <!-- Full Name + Avatar -->
                 <td>
@@ -56,6 +61,7 @@
                 <!-- Actions -->
                 <td>
                     <div class="d-flex gap-2 justify-content-end">
+<<<<<<< HEAD
                         <button type="button" class="btn-icon-edit btn-edit-member"
                                 data-bs-toggle="modal"
                                 data-bs-target="#editMemberModal"
@@ -70,6 +76,21 @@
                         <g:form action="archive" method="post" style="display:inline" class="archive-confirm-form"
                                 data-archive-title="Archive this member?"
                                 data-archive-text="They will not appear in the active list but remain in the database for history.">
+=======
+                        <button class="btn-icon-edit"
+                                onclick="openEditMember(
+                                    ${member.id},
+                                    '${member.fullName}',
+                                    '${member.email}',
+                                    '${member.phoneNumber ?: ''}',
+                                    '${member.address ?: ''}'
+                                )">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+
+                        <g:form action="archive" method="post" style="display:inline"
+                                onsubmit="return confirm('Archive this member? They will not appear in the active list but remain in the database for history.');">
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
                             <input type="hidden" name="id" value="${member.id}"/>
                             <button type="submit" class="btn-icon-delete" title="Archive member">
                                 <i class="bi bi-archive"></i>

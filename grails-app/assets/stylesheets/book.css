@@ -72,8 +72,11 @@
     margin-top: 8px;
     padding-top: 12px;
     border-top: 1px solid #f3f4f6;
+<<<<<<< HEAD
     position: relative;
     z-index: 1;
+=======
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
 }
 
 .btn-edit {

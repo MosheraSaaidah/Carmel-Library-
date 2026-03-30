@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /**
  * Remember which book to load: capture phase runs before Bootstrap handles the click, so we never
  * depend on show.bs.modal's relatedTarget (often null in BS5 / icon clicks / AJAX-replaced rows).
@@ -48,31 +49,73 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!searchInput || !booksGrid) {
         return;
     }
+=======
+
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.querySelector('.search-input');
+    const booksGrid  = document.getElementById('booksGrid');
+
+    if (booksGrid) {
+        booksGrid.addEventListener('click', function (e) {
+            var btn = e.target && e.target.closest('.btn-edit-book');
+            if (!btn) return;
+            e.preventDefault();
+            openEditBook(
+                btn.dataset.id,
+                btn.dataset.title || '',
+                btn.dataset.author || '',
+                btn.dataset.description || '',
+                parseInt(btn.dataset.totalCopies, 10) || 0,
+                parseInt(btn.dataset.publishYear, 10) || 0,
+                parseInt(btn.dataset.categoryId, 10) || 0
+            );
+        });
+    }
+
+    if (!searchInput || !booksGrid) return;
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
 
     var searchTimer;
 
     searchInput.addEventListener('input', function () {
         clearTimeout(searchTimer);
         searchTimer = setTimeout(function () {
+<<<<<<< HEAD
             var query = searchInput.value.trim();
             var url = '?' + (query ? 'q=' + encodeURIComponent(query) : '');
 
             fetch(('' + window.location.pathname) + url, {
                 method : 'GET',
+=======
+            const query = searchInput.value.trim();
+            const url  = '?' + (query ? 'q=' + encodeURIComponent(query) : '');
+
+            fetch(('' + window.location.pathname) + url, {
+                method: 'GET',
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
             })
                 .then(function (r) { return r.text(); })
                 .then(function (html) {
                     booksGrid.innerHTML = html;
+<<<<<<< HEAD
                     window.history.replaceState({}, '', window.location.pathname + url);
                 })
                 .catch(function () {
+=======
+                    // تحديث الرابط في المتصفح بدون إعادة تحميل (مثلاً للمشاركة أو التحديث لاحقاً)
+                    window.history.replaceState({}, '', window.location.pathname + url);
+                })
+                .catch(function () {
+                    // لو فشل الـ AJAX نرجع للطريقة القديمة (تحميل كامل الصفحة)
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
                     window.location.href = window.location.pathname + url;
                 });
         }, 350);
     });
 });
 
+<<<<<<< HEAD
 function getBookEditUrl(apiCfg, id) {
     if (!apiCfg || id == null || id === '') {
         return null;
@@ -156,3 +199,19 @@ function loadBookForEdit(id) {
             } catch (e) { /* no-op */ }
         });
 }
+=======
+
+
+
+function openEditBook(id, bookTitle, authorName, description, totalCopies, publishYear, categoryId) {
+    document.getElementById('editBookId').value      = id;
+    document.getElementById('editTitle').value       = bookTitle;
+    document.getElementById('editAuthor').value      = authorName;
+    document.getElementById('editDescription').value = description || '';
+    document.getElementById('editTotalCopies').value = totalCopies;
+    document.getElementById('editPublishYear').value = publishYear;
+    document.getElementById('editCategoryId').value  = categoryId;
+
+    new bootstrap.Modal(document.getElementById('editBookModal')).show();
+}
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e

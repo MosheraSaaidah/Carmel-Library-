@@ -55,6 +55,7 @@ class CategoryController {
         }
     }
 
+<<<<<<< HEAD
     def update() {
         if (!securityService.hasRole(session, 'ADMIN')) {
             redirect(controller: 'auth', action: 'login')
@@ -75,6 +76,8 @@ class CategoryController {
         }
     }
 
+=======
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
     // Deletes a category that has no books.
     def delete() {
         if(!securityService.hasRole(session ,"ADMIN"))

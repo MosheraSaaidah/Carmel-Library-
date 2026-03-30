@@ -10,7 +10,11 @@ class BorrowService {
     NotificationService notificationService
     SettingService settingService
     int getDaysUntilDue() {
+<<<<<<< HEAD
         settingService.getInt(SettingKey.BORROW_DAYS_UNTIL_DUE) ?: 14
+=======
+        settingService.getInt(SettingService.BORROW_DAY_UNIT_DUE) ?: 14
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
     }
 
     // Returns all borrows or a subset filtered by status for the
@@ -21,7 +25,14 @@ class BorrowService {
         Borrow.findAllByStatus(filter)
     }
 
+<<<<<<< HEAD
    
+=======
+    // Creates a new borrow record while enforcing key business rules:
+    // - Book and member must exist.
+    // - Book must have at least one available copy.
+    // - Due date is 14 days from the borrow date.
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
     def borrow(Long bookId, Long memberId) {
         def book   = Book.get(bookId)
         def member = Member.get(memberId)
@@ -67,6 +78,10 @@ class BorrowService {
             throw new Exception(msg ?: "Unable to borrow this book.")
         }
 
+<<<<<<< HEAD
+=======
+        // حفظ الاستعارة (لو فشل يرمي استثناءً ويرجع السبب في التوست)
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
         borrow.save(flush: true, failOnError: true)
 
         book.availableCopies--
@@ -75,7 +90,13 @@ class BorrowService {
         borrow
     }
 
+<<<<<<< HEAD
    
+=======
+    /**
+     * Marks a borrow as returned.
+     */
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
     def returnBookService(Long borrowId) {
         def borrow = Borrow.get(borrowId)
         if (!borrow) throw new Exception("Borrow record not found")
@@ -116,4 +137,8 @@ class BorrowService {
         }
     }
 
+<<<<<<< HEAD
+=======
+    // Borrowing records are never deleted; they are kept for history and statistics.
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
 }

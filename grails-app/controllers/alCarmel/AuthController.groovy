@@ -1,7 +1,10 @@
 package alCarmel
 
 import grails.gorm.transactions.Transactional
+<<<<<<< HEAD
 import org.springframework.web.util.HtmlUtils
+=======
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
 
 class AuthController {
 
@@ -178,6 +181,7 @@ class AuthController {
 
         String subject = "Confirm your Carmel Library account"
         String confirmationLink = "http://localhost:8080/auth/confirmEmail?token=${token}"
+<<<<<<< HEAD
         String safeName = HtmlUtils.htmlEscape(fullName)
         String body = """<html><body>
 <h3>Hello ${safeName},</h3>
@@ -186,6 +190,17 @@ class AuthController {
 </body></html>"""
 
         boolean sent = emailService.sendHtmlEmail(email, subject, body)
+=======
+        String body = """Hello ${fullName},
+
+        Please Confirm link:
+        ${confirmationLink}
+        
+        Thank you :).
+        """
+
+        boolean sent = emailService.sendEmail(email, subject, body)
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
         if (sent) {
             flash.success = "Registration successful. Please check your email and click the confirmation link to activate your account."
         } else {

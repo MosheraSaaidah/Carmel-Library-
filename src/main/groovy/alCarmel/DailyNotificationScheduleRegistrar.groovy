@@ -53,12 +53,20 @@ class DailyNotificationScheduleRegistrar {
      */
     void reschedule() {
         cancelJob()
+<<<<<<< HEAD
         Boolean enabled = settingService.getBool(SettingKey.NOTIFICATION_DAILY_ENABLED)
+=======
+        Boolean enabled = settingService.getBool(SettingService.NOTIF_DAILY_ENABLED)
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
         if (enabled == Boolean.FALSE) {
             log.info('Daily notification schedule is disabled (notification.dailyScheduleEnabled).')
             return
         }
+<<<<<<< HEAD
         String cron = settingService.get(SettingKey.NOTIFICATION_DAILY_CRON) ?: '0 0 20 * * ?'
+=======
+        String cron = settingService.get(SettingService.NOTIF_DAILY_CRON) ?: '0 0 20 * * ?'
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
         try {
             scheduledFuture = scheduler.schedule(
                     { dailyNotificationSchedulerService.runDailyBorrowNotifications() },

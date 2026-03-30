@@ -1,4 +1,5 @@
 <!doctype html>
+<<<<<<< HEAD
 <g:set var="uiLang" value="${session?.uiLang ?: 'en'}"/>
 <g:set var="isRtl" value="${uiLang == 'ar'}"/>
 <g:set var="nextLang" value="${isRtl ? 'en' : 'ar'}"/>
@@ -8,6 +9,13 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title><g:message code="app.title"/></title>
+=======
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Carmel Library</title>
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2316a34a'/%3E%3Cpath d='M8 10v12c0 .5.4 1 1 1h4V9H9c-.6 0-1 .4-1 1z' fill='white' opacity='.9'/%3E%3Cpath d='M24 10v12c0 .5-.4 1-1 1h-4V9h4c.6 0 1 .4 1 1z' fill='white' opacity='.9'/%3E%3Cpath d='M16 9v14h-3V9h3zm0 0v14h3V9h-3z' fill='white'/%3E%3C/svg%3E"/>
 
 %{-- Bootstrap 5--}%
@@ -47,7 +55,12 @@
       <g:layoutHead/>
 </head>
 
+<<<<<<< HEAD
 <body class="${controllerName == 'auth' ? 'auth-page' : ''} ${isRtl ? 'lang-ar' : 'lang-en'}">
+=======
+<body class="${controllerName == 'auth' ? 'auth-page' : ''}"
+      data-success="${flash.success}" data-error="${flash.error}">
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
 
 <g:set bean="securityService" var="securityService"/>
 
@@ -75,43 +88,71 @@
                     <g:link controller="dashboard" action="index"
                             class="nav-item ${controllerName == 'dashboard' ? 'active' : ''}">
                         <i class="bi bi-grid-1x2"></i>
+<<<<<<< HEAD
                         <span><g:message code="nav.dashboard"/></span>
+=======
+                        <span>Dashboard</span>
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
                     </g:link>
 
                     <g:link controller="book" action="index"
                             class="nav-item ${controllerName == 'book' ? 'active' : ''}">
                         <i class="bi bi-book"></i>
+<<<<<<< HEAD
                         <span><g:message code="nav.books"/></span>
+=======
+                        <span>Books Inventory</span>
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
                     </g:link>
 
                     <g:link controller="category" action="index"
                             class="nav-item ${controllerName == 'category' ? 'active' : ''}">
                         <i class="bi bi-tag"></i>
+<<<<<<< HEAD
                         <span><g:message code="nav.categories"/></span>
+=======
+                        <span>Categories</span>
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
                     </g:link>
 
                     <g:link controller="borrow" action="index"
                             class="nav-item ${controllerName == 'borrow' ? 'active' : ''}">
                         <i class="bi bi-clock-history"></i>
+<<<<<<< HEAD
                         <span><g:message code="nav.borrowing"/></span>
+=======
+                        <span>Borrowing System</span>
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
                     </g:link>
 
                     <g:link controller="member" action="index"
                             class="nav-item ${controllerName == 'member' ? 'active' : ''}">
                         <i class="bi bi-people"></i>
+<<<<<<< HEAD
                         <span><g:message code="nav.members"/></span>
+=======
+                        <span>Members</span>
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
                     </g:link>
 
                     <g:link controller="report" action="index"
                             class="nav-item ${controllerName == 'report' ? 'active' : ''}">
                         <i class="bi bi-bar-chart-line"></i>
+<<<<<<< HEAD
                         <span><g:message code="nav.reports"/></span>
+=======
+                        <span>Reports</span>
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
                     </g:link>
 
                     <g:link controller="reservationAdmin" action="index"
                             class="nav-item ${controllerName == 'reservationAdmin' ? 'active' : ''}">
                         <i class="bi bi-bookmark"></i>
+<<<<<<< HEAD
                         <span><g:message code="nav.reservations"/></span>
+=======
+                        <span>Reservations</span>
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
                     </g:link>
                 </g:if>
 
@@ -120,23 +161,36 @@
                     <g:link controller="memberArea" action="books"
                             class="nav-item ${controllerName == 'memberArea' && actionName == 'books' ? 'active' : ''}">
                         <i class="bi bi-book"></i>
+<<<<<<< HEAD
                         <span><g:message code="nav.member.books"/></span>
+=======
+                        <span>Available Books</span>
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
                     </g:link>
 
                     <g:link controller="memberArea" action="borrowHistory"
                             class="nav-item ${controllerName == 'memberArea' && actionName == 'borrowHistory' ? 'active' : ''}">
                         <i class="bi bi-clock-history"></i>
+<<<<<<< HEAD
                         <span><g:message code="nav.member.borrowHistory"/></span>
+=======
+                        <span>My Borrow History</span>
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
                     </g:link>
 
                     <g:link controller="memberArea" action="reservations"
                             class="nav-item ${controllerName == 'memberArea' && actionName == 'reservations' ? 'active' : ''}">
                         <i class="bi bi-bookmark"></i>
+<<<<<<< HEAD
                         <span><g:message code="nav.member.reservations"/></span>
+=======
+                        <span>My Reservations</span>
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
                     </g:link>
                 </g:if>
             </div>
 
+<<<<<<< HEAD
             %{-- Language + logout (footer) --}%
             <div class="sidebar-footer">
                 <g:link controller="locale" action="switchLang"
@@ -153,6 +207,14 @@
                         class="nav-item">
                     <i class="bi bi-box-arrow-right"></i>
                     <span><g:message code="nav.logout"/></span>
+=======
+            %{-- Logout at bottom (for both ADMIN and MEMBER) --}%
+            <div style="margin-top:auto;padding:8px 4px;">
+                <g:link controller="auth" action="logout"
+                        class="nav-item">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
                 </g:link>
             </div>
 
@@ -161,6 +223,7 @@
 
     %{--   Main Content    --}%
     <main class="main-content">
+<<<<<<< HEAD
         %{-- Auth: login/register card centered; flash toasts fixed bottom-right of the viewport --}%
         <g:if test="${controllerName == 'auth'}">
             <div class="auth-page-inner">
@@ -197,6 +260,9 @@
             </g:if>
             <g:layoutBody/>
         </g:else>
+=======
+        <g:layoutBody/>
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
 </main>
 </div>
 
@@ -206,6 +272,7 @@
 
 %{-- Bootstrap 5--}%
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<<<<<<< HEAD
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.flash-banner').forEach(function (el) {
@@ -217,6 +284,8 @@
         });
     });
 </script>
+=======
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
 
 %{-- SweetAlert2--}%
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
@@ -242,7 +311,11 @@
     <asset:javascript src="members.js"/>
 </g:if>
 
+<<<<<<< HEAD
 %{-- Shared UI (archive confirm, category edit modal, etc.) — after SweetAlert2 --}%
+=======
+%{-- application.js — عام لكل الصفحات (Toast) --}%
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
 <asset:javascript src="application.js"/>
 
 </body>

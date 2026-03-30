@@ -22,6 +22,10 @@ class Member {
     Date membershipDate = new Date()
     User user
 
+<<<<<<< HEAD
+=======
+    /** Soft delete: false = archived, not shown in normal lists */
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
     Boolean active = true
     Date dateCreated
     Date lastUpdated
@@ -40,6 +44,10 @@ class Member {
             if (!v.matches(/^\d{10,12}$/)) return 'invalidLength'
             return true
         }
+<<<<<<< HEAD
+=======
+        // We reuse `address` as a standardized city field selected from CITY_OPTIONS.
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
         address     nullable: false, inList: CITY_OPTIONS
         archivedAt  nullable: true
         archivedBy  nullable: true

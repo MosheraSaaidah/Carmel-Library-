@@ -18,6 +18,14 @@ class Book {
 
     static belongsTo = [category: Category]
     static hasMany = [borrow: Borrow]
+<<<<<<< HEAD
+=======
+    // Business rules / validation:
+    // - `bookTitle` must be present and unique per `authorName`
+    //   so the same author cannot have two books with the same title.
+    // - `publishYear` cannot be in the future (greater than current year).
+    // - Other fields are optional where marked `nullable`.
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
     static constraints = {
         bookTitle blank: false ,unique: ['authorName']
         authorName blank: false

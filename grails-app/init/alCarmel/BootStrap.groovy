@@ -14,7 +14,11 @@ class BootStrap {
 
         settingService.initDefaults()
 
+<<<<<<< HEAD
        
+=======
+        // Ensure there is always a valid ADMIN user with known credentials.
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
         def admin = User.findByUsername('admin') ?: new User(username: 'admin')
         admin.email = 'admin@gmail.com'
         admin.passwordHash = securityService.encodePassword('admin123')
@@ -72,7 +76,11 @@ class BootStrap {
             try {
                 sql.execute("ALTER TABLE ${it.table} ADD COLUMN ${it.column} ${it.type}")
             } catch (Exception e) {
+<<<<<<< HEAD
              
+=======
+                // Column already exists or DB dialect differs - ignore
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
             }
         }
         sql.close()

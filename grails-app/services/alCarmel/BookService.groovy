@@ -18,6 +18,10 @@ class BookService {
         Book.findAllByActive(true, [sort: 'bookTitle', order: 'asc'])
     }
 
+<<<<<<< HEAD
+=======
+    /** List only archived books for admin/archived view. */
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
     def getArchivedBooks(String query = null) {
         if (query) {
             return Book.executeQuery("""
@@ -35,7 +39,10 @@ class BookService {
         def book = new Book(
                 bookTitle     : params.bookTitle,
                 authorName    : params.authorName,
+<<<<<<< HEAD
                 description   : params.description,
+=======
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
                 totalCopies   : params.totalCopies as Integer ?: 1,
                 availableCopies: params.totalCopies as Integer ?: 1,
                 publishYear   : params.publishYear as Integer,
@@ -49,6 +56,7 @@ class BookService {
     def updateBook(Long id, Map params) {
         def book = Book.get(id)
         if (!book) return null
+<<<<<<< HEAD
 
         def onLoan = Math.max(0, (book.totalCopies ?: 0) - (book.availableCopies ?: 0))
 
@@ -88,11 +96,29 @@ class BookService {
         book.category      = category
         book.totalCopies   = newTotal
         book.availableCopies = newTotal - onLoan
+=======
+        book.bookTitle     = params.bookTitle
+        book.authorName    = params.authorName
+        book.description   = params.description
+        book.publishYear   = params.publishYear as Integer
+        book.category      = Category.get(params.categoryId as Long)
+
+        def diff = params.totalCopies as Integer - book.totalCopies
+        book.totalCopies   = params.totalCopies as Integer
+        book.availableCopies = book.availableCopies + diff
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
         book.save()
         book
     }
 
+<<<<<<< HEAD
     
+=======
+    /**
+     * Archive book (soft delete). Cannot archive if it is currently borrowed (BORROWED or LATE).
+     * @param archivedByMemberId optional id of the member/admin performing the archive (nullable)
+     */
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
     def archiveBook(Long id, Long archivedByMemberId = null) {
         def book = Book.get(id)
         if (!book) return null

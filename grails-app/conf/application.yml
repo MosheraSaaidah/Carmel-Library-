@@ -113,7 +113,11 @@ environments:
     development:
         dataSource:
             dbCreate: update
+<<<<<<< HEAD
             url: jdbc:h2:file:./data/carmelDevDb;AUTO_SERVER=TRUE;LOCK_TIMEOUT=10000
+=======
+            url: jdbc:h2:file:./data/carmelDevDb;LOCK_TIMEOUT=10000
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
     test:
         dataSource:
             dbCreate: update
@@ -139,6 +143,7 @@ environments:
                 testWhileIdle: true
                 testOnReturn: false
                 jdbcInterceptors: ConnectionState
+<<<<<<< HEAD
                 defaultTransactionIsolation: 2
 
 ---
@@ -151,3 +156,6 @@ spring:
     console:
       enabled: true
       path: /h2-console
+=======
+                defaultTransactionIsolation: 2 
+>>>>>>> e66bcc56455ff1dabd506a74f52d86e3e725c50e
