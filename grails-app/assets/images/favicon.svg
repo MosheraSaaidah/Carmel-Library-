@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="6" fill="#16a34a"/>
+  <!-- كتاب مفتوح -->
+  <path d="M8 10v12c0 .5.4 1 1 1h4V9H9c-.6 0-1 .4-1 1z" fill="white" opacity=".9"/>
+  <path d="M24 10v12c0 .5-.4 1-1 1h-4V9h4c.6 0 1 .4 1 1z" fill="white" opacity=".9"/>
+  <path d="M16 9v14h-3V9h3zm0 0v14h3V9h-3z" fill="white"/>
+</svg>

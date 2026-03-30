@@ -1,0 +1,566 @@
+/* ===== VARIABLES & FONTS ===== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap');
+
+:root {
+    --green-primary : #16a34a;
+    --green-light   : #f0fdf4;
+    --green-border  : #bbf7d0;
+    --sidebar-width : 260px;
+    --text-dark     : #111827;
+    --text-gray     : #6b7280;
+    --bg-page       : #f8fafb;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg-page); overflow-x: hidden; }
+
+body.lang-ar {
+    font-family: 'Noto Sans Arabic', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ===== LAYOUT ===== */
+.app-wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* Auth (login/register) layout: center card, no sidebar margin */
+.auth-page .main-content {
+    /* Background slightly darker to match app green theme */
+    background: linear-gradient(135deg, #14532d, var(--green-primary));
+    margin-left: 0;
+    width: 100%;
+    min-height: 100vh;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.auth-page .card-white {
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.22);
+    border-radius: 18px;
+}
+
+/* Login/register: card centered; auth flash toasts are fixed bottom-right (see .auth-messages) */
+.auth-page-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 480px;
+    gap: 12px;
+}
+
+/* Auth flash: fixed bottom-right of the viewport (toast-style) */
+.auth-page .auth-messages {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    left: auto;
+    width: min(calc(100vw - 32px), 380px);
+    max-width: 380px;
+    margin: 0;
+    z-index: 1090;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+    pointer-events: none;
+}
+
+.auth-page .auth-messages > * {
+    pointer-events: auto;
+}
+
+/* يغلب تنسيق Bootstrap للـ alert-dismissible */
+.auth-page .auth-messages .auth-flash-banner.alert {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    text-align: right;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.18);
+    border-radius: 12px;
+}
+
+.auth-page .auth-messages .auth-flash-body {
+    flex: 1 1 auto;
+    text-align: right;
+    min-width: 0;
+    line-height: 1.45;
+}
+
+.auth-page .auth-messages .auth-flash-close.btn-close {
+    position: static;
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 0.4rem;
+}
+
+/* أخطاء الحقول في صفحة التسجيل (تحت كل حقل) */
+.auth-page .card-white .text-danger.small,
+.auth-page .card-white .mb-3 .text-danger.small {
+    display: block;
+    width: 100%;
+    text-align: right !important;
+    margin-top: 4px;
+}
+
+/* Auth buttons: use the same green as the rest of the app */
+.auth-page .btn-green {
+    background: var(--green-primary);
+    color: #ffffff;
+}
+
+.auth-page .btn-green:hover {
+    background: #15803d;
+    color: #ffffff;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 16px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+/* ===== Logo ==== */
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+    padding: 0 8px;
+}
+
+.logo-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--green-primary);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.logo-text-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+}
+
+.logo-text-ar {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+}
+
+.logo-text-en {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--green-primary);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    line-height: 1.3;
+}
+
+/*======== Nav ==========*/
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 14px;
+    border-radius: 10px;
+    color: var(--text-dark);
+    text-decoration: none;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.nav-item i { font-size: 16px; }
+.nav-item:hover { background: var(--green-light); color: var(--green-primary); }
+.nav-item.active { background: var(--green-primary); color: #ffffff; font-weight: 600; }
+
+.sidebar-footer {
+    margin-top: auto;
+    padding: 8px 4px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nav-lang-toggle {
+    border: 1px dashed #d1d5db;
+}
+.nav-lang-toggle:hover {
+    border-color: var(--green-border);
+}
+
+/* ========Librarian Box=========== */
+.librarian-box {
+    background: var(--green-light);
+    border: 1px solid var(--green-border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 24px;
+}
+
+.librarian-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--green-primary);
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.librarian-text {
+    font-size: 12px;
+    color: var(--text-gray);
+    line-height: 1.5;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+    margin-left: var(--sidebar-width);
+    padding: 40px;
+    width: calc(100% - var(--sidebar-width));
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ===== SHARED COMPONENTS ===== */
+
+/* Page Header */
+.page-title    { font-size: 28px; font-weight: 700; color: var(--text-dark); }
+.page-subtitle { font-size: 14px; color: var(--text-gray); margin-top: 6px; }
+
+/* Card */
+.card-white {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+}
+
+/* Button Green */
+.btn-green {
+    background: var(--green-primary);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+.btn-green:hover { background: #15803d; color: white; }
+
+/* Avatar */
+.avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--green-light);
+    color: var(--green-primary);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+    border: 1px solid var(--green-border);
+    flex-shrink: 0;
+}
+
+/* Status Badges */
+.badge-borrowed { background: #fff7ed; color: #f97316; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.badge-returned { background: #f0fdf4; color: #16a34a; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.badge-late     { background: #fef2f2; color: #dc2626; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+
+/* ===== STATS GRID ===== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+}
+
+.stat-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+.icon-blue   { background: #eff6ff; color: #3b82f6; }
+.icon-green  { background: #f0fdf4; color: #16a34a; }
+.icon-purple { background: #faf5ff; color: #9333ea; }
+.icon-orange { background: #fff7ed; color: #f97316; }
+.icon-red    { background: #fef2f2; color: #ef4444; }
+.icon-teal   { background: #f0fdfa; color: #14b8a6; }
+
+.stat-label { font-size: 11px; color: var(--text-gray); letter-spacing: 0.5px; margin-bottom: 4px; }
+.stat-value { font-size: 28px; font-weight: 700; color: var(--text-dark); }
+
+/* ===== QUICK ACTIONS ===== */
+.quick-actions { display: flex; flex-direction: column; gap: 10px; }
+
+.quick-action-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px;
+    border-radius: 12px;
+    background: #f9fafb;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.quick-action-item:hover { background: var(--green-light); }
+
+.quick-icon {
+    width: 38px; height: 38px;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: #374151;
+    flex-shrink: 0;
+}
+
+.quick-title { font-size: 14px; font-weight: 600; color: var(--text-dark); }
+.quick-sub   { font-size: 11px; color: #9ca3af; letter-spacing: 0.5px; margin-top: 2px; }
+
+/* ===== SEARCH ===== */
+.search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 16px;
+    color: #9ca3af;
+    font-size: 16px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 16px 12px 44px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 14px;
+    outline: none;
+    background: #f9fafb;
+    transition: border 0.2s;
+}
+
+.search-input:focus { border-color: var(--green-primary); background: white; }
+
+/* ===== MODALS ===== */
+.modal-custom { border-radius: 20px; border: none; overflow: hidden; }
+
+.modal-header-custom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.modal-header-custom h5 { font-size: 18px; font-weight: 700; color: var(--text-dark); margin: 0; }
+
+.modal-body-custom {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.modal-footer-custom {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid #f3f4f6;
+}
+
+/* Form */
+.form-group-custom { display: flex; flex-direction: column; gap: 6px; }
+
+.form-group-custom label { font-size: 11px; font-weight: 700; color: #6b7280; letter-spacing: 0.5px; }
+
+.input-custom {
+    padding: 10px 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+    background: #f9fafb;
+    transition: border 0.2s;
+    width: 100%;
+}
+
+.input-custom:focus { border-color: var(--green-primary); background: white; }
+
+.btn-cancel {
+    padding: 10px 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: white;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn-cancel:hover { background: #f9fafb; }
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+    text-align: center;
+    padding: 60px;
+    color: #9ca3af;
+    grid-column: 1 / -1;
+}
+
+.empty-state i { font-size: 48px; margin-bottom: 12px; display: block; }
+
+/* ===== SHARED ICON BUTTONS ===== */
+.btn-icon-edit {
+    width: 34px; height: 34px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: white;
+    color: #374151;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+}
+
+.btn-icon-edit:hover { background: #f9fafb; }
+
+.btn-icon-delete {
+    width: 34px; height: 34px;
+    border: 1px solid #fee2e2;
+    border-radius: 8px;
+    background: white;
+    color: #ef4444;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+}
+
+.btn-icon-delete:hover { background: #fef2f2; }
+
+/* SweetAlert2 (e.g. future use) above sidebar and modals */
+.swal2-container {
+    z-index: 20000 !important;
+}
+
+/* Flash messages (layout) */
+.flash-banner {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+}
+
+/* Auth: أي flash-banner تحت البطاقة */
+.auth-page .auth-messages .flash-banner {
+    width: 100%;
+    margin-bottom: 0 !important;
+}
+
+/* ===== RTL (Arabic UI) ===== */
+[dir="rtl"] .sidebar {
+    left: auto;
+    right: 0;
+    border-right: none;
+    border-left: 1px solid #e5e7eb;
+}
+
+[dir="rtl"] .main-content {
+    margin-left: 0;
+    margin-right: var(--sidebar-width);
+}
+
+[dir="rtl"] .sidebar-logo,
+[dir="rtl"] .nav-item,
+[dir="rtl"] .quick-action-item {
+    flex-direction: row-reverse;
+    text-align: right;
+}
+
+[dir="rtl"] .logo-text-wrap {
+    align-items: flex-end;
+}
+
+/* لا نعكس justify-content-between بـ row-reverse: في RTL يكفي dir=rtl حتى يصبح flex-start يمين الشاشة */
+[dir="rtl"] .page-title,
+[dir="rtl"] .page-subtitle {
+    text-align: right;
+}
+
+[dir="rtl"] .dashboard-page-heading {
+    width: 100%;
+    justify-content: flex-start;
+}
+
+[dir="rtl"] .dashboard-page-heading-inner {
+    width: 100%;
+    text-align: right;
+}
+
+[dir="rtl"] .stat-card .stat-label,
+[dir="rtl"] .stat-card .stat-value {
+    text-align: right;
+}
+
+[dir="rtl"] table.table th,
+[dir="rtl"] table.table td {
+    text-align: right;
+}
+

@@ -1,0 +1,125 @@
+/* ===== BOOKS GRID ===== */
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.book-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: box-shadow 0.2s;
+}
+
+.book-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+
+.book-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+    min-height: 28px;
+}
+
+.book-card-top .category-badge {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.category-badge {
+    background: #f3f4f6;
+    color: #374151;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.book-card-top .copies-badge {
+    flex-shrink: 0;
+}
+
+.copies-available { background: #f0fdf4; color: #16a34a; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.copies-none      { background: #fef2f2; color: #dc2626; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+
+.book-title       { font-size: 16px; font-weight: 700; color: var(--text-dark); }
+.book-author      { font-size: 13px; color: var(--text-gray); }
+.book-description { font-size: 13px; color: #6b7280; line-height: 1.5; flex: 1; }
+
+.book-footer {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: #9ca3af;
+    margin-top: 4px;
+}
+
+.book-footer i { margin-right: 4px; }
+
+.book-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid #f3f4f6;
+    position: relative;
+    z-index: 1;
+}
+
+.btn-edit {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: white;
+    color: #374151;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: all 0.2s;
+}
+
+.btn-edit:hover { background: #f9fafb; }
+
+.btn-delete {
+    padding: 8px 12px;
+    border: 1px solid #fee2e2;
+    border-radius: 8px;
+    background: white;
+    color: #ef4444;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-delete:hover { background: #fef2f2; }
+
+/* Restore button (archived books) */
+.btn-restore {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    background: #16a34a;
+    color: white;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background 0.2s;
+}
+.btn-restore:hover { background: #15803d; }
+

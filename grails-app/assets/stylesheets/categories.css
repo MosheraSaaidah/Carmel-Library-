@@ -1,0 +1,56 @@
+/* ===== CATEGORIES TABLE ===== */
+.categories-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.categories-table th {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-gray);
+    letter-spacing: 0.5px;
+    padding: 16px 20px;
+    text-align: left;
+    border-bottom: 1px solid #f3f4f6;
+    background: #fafafa;
+}
+
+.categories-table td {
+    padding: 14px 20px;
+    border-bottom: 1px solid #f9fafb;
+    vertical-align: middle;
+}
+
+.categories-table tr:last-child td { border-bottom: none; }
+.categories-table tbody tr:hover td { background: #fafafa; }
+
+.category-table-link {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+.category-table-link:hover { color: var(--green-primary); }
+
+/* Policy Box */
+.policy-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 12px;
+    padding: 14px;
+}
+
+.policy-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1d4ed8;
+    margin-bottom: 2px;
+}
+
+.policy-text {
+    font-size: 12px;
+    color: #3b82f6;
+}
+
